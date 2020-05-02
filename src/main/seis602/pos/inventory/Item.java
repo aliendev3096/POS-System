@@ -1,0 +1,5 @@
+package main.seis602.pos.inventory;
+
+public class Item {
+
+}
