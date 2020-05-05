@@ -7,8 +7,10 @@ public class Cashier
 	private String firstName;
 	private String lastName;
 	
-	public Cashier()
+	public Cashier(String firstName, String lastName)
 	{
+		this.firstName = firstName;
+		this.lastName = lastName;
 		cashierId = identifier;
 		identifier++;
 	}
