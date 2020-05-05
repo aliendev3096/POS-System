@@ -105,10 +105,11 @@ public class Register
 		// Set Sale Status as Returned
 		sale.setStatus = Status.Returned;
 		
-		// return all items in sale to inventory
+		// return all items in sale to inventory and mark it respectively in its sale
 		for(Item item: sales.getItems())
 		{
 			sale.returnItem(item.itemId);
+			inventory.add(item);
 		}
 		
 		// Reduce total sales amount but returned sale amount
