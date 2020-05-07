@@ -38,7 +38,7 @@ public class Console
 			switch(commandOption)
 			{
 				case 1: 			
-					// Auth Flow
+					// Authentication Flow
 					while(!validCredentials)
 					{
 						// prompt for user credentials

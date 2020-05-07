@@ -15,8 +15,13 @@ public class Sale
 	private int saleId;
 	private Status status;
 	private Date date;
-	private List<Map<String, Item>> itemList;
+	private List<Map<ItemStatus, Item>> itemList;
 	private double total;
+	
+	public Sale()
+	{
+		this.status = Status.ACTIVE;
+	}
 	
 	public int getSaleId() {
 		return saleId;
@@ -42,14 +47,14 @@ public class Sale
 		this.date = date;
 	}
 	
-	public List<Map<String, Item>> getItemList() {
+	public List<Map<ItemStatus, Item>> getItemList() {
 		if(itemList == null) {
-			itemList = new ArrayList<Map<String, Item>>();
+			itemList = new ArrayList<Map<ItemStatus, Item>>();
 		}
 		return itemList;
 	}
 	
-	public void setItemList(List<Map<String, Item>> itemList) {
+	public void setItemList(List<Map<ItemStatus, Item>> itemList) {
 		this.itemList = itemList;
 	}
 	
@@ -66,9 +71,8 @@ public class Sale
 		
 		// Add the item to the sales list, only if the item is in stock
 		if(currentOnHandQty > 0) {
-			this.status = Status.ACTIVE;
-			Map<String, Item> itemToAdd = new HashMap<String, Item>();
-			itemToAdd.put(item.getName(), item);
+			Map<ItemStatus, Item> itemToAdd = new HashMap<ItemStatus, Item>();
+			itemToAdd.put(ItemStatus.ACTIVE, item);
 			this.itemList.add(itemToAdd); // add the item to the sales list
 			setTotal(getTotal() + item.getPrice()); // adjust the sales total price
 			item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
@@ -76,7 +80,7 @@ public class Sale
 	}
 	
 	public void voidItem(Item item) {
-		for(Map<String, Item> itemMap : this.itemList) {
+		for(Map<ItemStatus, Item> itemMap : this.itemList) {
 			if(itemMap.containsKey(item.getName())) { // Item found in the sales list
 				this.itemList.remove(itemMap); // remove the item from the sales list
 				setTotal(getTotal() - item.getPrice()); // adjust the sales total price
@@ -87,8 +91,8 @@ public class Sale
 	}
 	
 	public void voidSales() {
-		List<Map<String, Item>> salesList = this.itemList;
-		for(Map<String, Item> itemMap : salesList) {
+		List<Map<ItemStatus, Item>> salesList = this.itemList;
+		for(Map<ItemStatus, Item> itemMap : salesList) {
 			Set<Entry<String, Item>> entrySet = itemMap.entrySet();
 			for(Entry<String, Item> entry: entrySet) {
 				Item item = entry.getValue();
@@ -100,21 +104,20 @@ public class Sale
 		this.status = Status.CANCELED;
 	}
 	
-	public Refund returnItem(Item item) {
-		Refund refund = new Refund();
-		for(Map<String, Item> itemMap : this.itemList) {
-			if(itemMap.containsKey(item.getName())) { // Item found in the sales list
-				this.itemList.remove(itemMap); // remove the item from the sales list
+	public boolean returnItem(Item item) {
+		boolean isReturned = false;
+		for(Map<ItemStatus, Item> itemMap : this.itemList) {
+			if(itemMap.containsKey(ItemStatus.ACTIVE) && itemMap.containsValue(item)) { // Item found in the sales list
+				itemMap.remove(ItemStatus.ACTIVE, item); // remove the item from the sales list
+				itemMap.put(ItemStatus.RETURNED, item); // add item to the sales list with returned status
 				setTotal(getTotal() - item.getPrice()); // adjust the sales total price
 				item.setOnHandQuantity(item.getOnHandQuantity() + 1); // adjust the item onHandQuantity
 				
-				refund.setSalesId(this.saleId);
-				refund.setItemName(item.getName());
-				refund.setRefundAmount(item.getPrice());
+				isReturned = true;
 				break;
 			}
 		}
-		this.status = Status.RETURNED;
-		return refund;
+		
+		return isReturned;
 	}
 }

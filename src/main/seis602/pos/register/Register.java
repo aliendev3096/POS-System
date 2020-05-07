@@ -107,9 +107,9 @@ public class Register
 		sale.setStatus(Status.RETURNED);
 		
 		// return all items in sale to inventory and mark it respectively in its sale
-		for(Map<String, Item> item : sale.getItemList())
+		for(Map<ItemStatus, Item> item : sale.getItemList())
 		{
-			sale.returnItem(item.getItemId());
+			sale.returnItem(item);
 			inventory.add(item);
 		}
 		
@@ -117,8 +117,9 @@ public class Register
 		this.totalSales -= sale.getTotal();
 	}
 	
-	public void returnSaleItem(int itemId, int saleId) throws Exception
+	public Refund returnSaleItem(Item itemToReturn, int saleId) throws Exception
 	{
+		Refund refund = new Refund();
 		// Get respective sale
 		Sale sale = sales.stream()
 				.filter(s -> s.getSaleId() == saleId)
@@ -130,20 +131,28 @@ public class Register
 			// throw exception if sale does not exist on registerId
 			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
 		}
-		// get Item from Sales Item List
-		Map<String, Item> item = sale.getItemList().stream()
-				.filter(s -> s.getItemId() == itemId)
-				.findFirst()
-				.orElse(null);
-		
-		//check for existing item in sale
-		if(sale == null)
-		{
-			// throw exception if item does not exist on sale
-			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", item.getItemId(), saleId));
-		}
+//		// get Item from Sales Item List
+//		Map<ItemStatus, Item> item = sale.getItemList().stream()
+//				.filter(i -> i.containsKey(ItemStatus.ACTIVE) && i.containsValue(itemToReturn))
+//				.findFirst()
+//				.orElse(null);
+//		
+//		//check for existing item in sale
+//		if(item == null)
+//		{
+//			// throw exception if item does not exist on sale
+//			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", item.getItemId(), saleId));
+//		}
 		// return item
-		sale.returnItem(item);
+		boolean returnedSuccess = sale.returnItem(itemToReturn);
+		
+		if(returnedSuccess)
+		{
+			refund.setSalesId(sale.getSaleId());
+			refund.setItemName(itemToReturn.getName());
+			refund.setRefundAmount(itemToReturn.getPrice());
+		}
+		return refund;
 	}
 	
 	public void printInventoryReport()
