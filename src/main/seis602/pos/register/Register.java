@@ -2,6 +2,7 @@ package main.seis602.pos.register;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import main.seis602.pos.inventory.Inventory;
 import main.seis602.pos.inventory.Item;
@@ -60,7 +61,7 @@ public class Register
 	public void createSale(Sale newSale) throws Exception
 	{
 		// check for active sale
-		if(activeSale.Status == Status.Active)
+		if(activeSale.getStatus() == Status.ACTIVE)
 		{
 			// throw exception if we have an active sales already
 			throw new Exception("Current Sale is still active");
@@ -72,14 +73,14 @@ public class Register
 	public void completeSale() throws Exception
 	{
 		// check for non active sale
-		if(activeSale.Status != Status.Active)
+		if(activeSale.getStatus() != Status.ACTIVE)
 		{			
 			// throw exception if we have do not have an active sale currently
 			throw new Exception("Current active sale is not active, there is no sale to complete");
 		}
 		
 		//set activeSale status to complete
-		this.activeSale.setStatus(Status.Complete);
+		this.activeSale.setStatus(Status.COMPLETED);
 		
 		//add activeSale to archived sales
 		this.sales.add(this.activeSale);
@@ -92,7 +93,7 @@ public class Register
 		// update the total sales property on the appropriate register without the use of a database which could
 		// potentially get messy. For simplicity sake the list of sales will be respective to its own class
 		Sale sale = sales.stream()
-				.filter(s -> s.saleId == saleId)
+				.filter(s -> s.getSaleId() == saleId)
 				.findFirst()
 				.orElse(null);
 		//check for existing sale
@@ -103,12 +104,12 @@ public class Register
 		}
 		
 		// Set Sale Status as Returned
-		sale.setStatus = Status.Returned;
+		sale.setStatus(Status.RETURNED);
 		
 		// return all items in sale to inventory and mark it respectively in its sale
-		for(Item item: sales.getItems())
+		for(Map<String, Item> item : sale.getItemList())
 		{
-			sale.returnItem(item.itemId);
+			sale.returnItem(item.getItemId());
 			inventory.add(item);
 		}
 		
@@ -120,7 +121,7 @@ public class Register
 	{
 		// Get respective sale
 		Sale sale = sales.stream()
-				.filter(s -> s.saleId == saleId)
+				.filter(s -> s.getSaleId() == saleId)
 				.findFirst()
 				.orElse(null);
 		//check for existing sale
@@ -130,8 +131,8 @@ public class Register
 			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
 		}
 		// get Item from Sales Item List
-		Item item = sale.getItems().stream()
-				.filter(s -> s.itemId == itemId)
+		Map<String, Item> item = sale.getItemList().stream()
+				.filter(s -> s.getItemId() == itemId)
 				.findFirst()
 				.orElse(null);
 		
@@ -142,7 +143,7 @@ public class Register
 			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", item.getItemId(), saleId));
 		}
 		// return item
-		sale.returnItem(itemId);
+		sale.returnItem(item);
 	}
 	
 	public void printInventoryReport()
