@@ -9,7 +9,7 @@ import main.seis602.pos.inventory.Item;
 
 public class Register 
 {
-	private static int identifier = 0;
+	private static int identifier = 45467;
 	private int registerId;
 	private Cashier cashier;
 	private List<Sale> sales;
@@ -109,8 +109,8 @@ public class Register
 		// return all items in sale to inventory and mark it respectively in its sale
 		for(Map<ItemStatus, Item> item : sale.getItemList())
 		{
-			sale.returnItem(item);
-			inventory.add(item);
+			sale.returnItem(item.get(ItemStatus.ACTIVE));
+			//inventory.add(item);
 		}
 		
 		// Reduce total sales amount but returned sale amount

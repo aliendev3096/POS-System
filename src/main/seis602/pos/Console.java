@@ -10,63 +10,79 @@ import main.seis602.pos.register.Register;
 
 public class Console 
 {
+	private static Register activeRegister = null;
+	private static ArrayList<Register> registers = new ArrayList<Register>();
+	private static Cashier cashier;
+	private static String username = null, password = null;
+	
 	public static void main(String[] args)
 	{
 		Scanner in = new Scanner(System.in);
-		ArrayList<Register> registers = new ArrayList<Register>();
 		boolean validCredentials = false;
-		Register activeRegister = null;
-		int commandOption = 0;
-		String username = null, password;
+		boolean reAuthenticate = true;
+		String commandOption = "0";
 		
-		while(commandOption != 7)
-		{
-			// Generate Prompt in watch mode style
-			StringBuilder consoleCommandPrompt = new StringBuilder("Command: \n");
-			consoleCommandPrompt.append("1) Log in to new register as new employee \n");
-			consoleCommandPrompt.append("2) Switch Register \n");
-			consoleCommandPrompt.append("3) Add Sale \n");
-			consoleCommandPrompt.append("4) Return Sale \n");
-			consoleCommandPrompt.append("5) Return Item in Current Sale \n");
-			consoleCommandPrompt.append("6) Complete Current Sale \n");
-			consoleCommandPrompt.append("7) Stop POS System");
-			
+		// Generate Prompt in watch mode style
+		StringBuilder consoleCommandPrompt = new StringBuilder("Command: \n");
+		consoleCommandPrompt.append("1) Log in to new register as new employee \n");
+		consoleCommandPrompt.append("2) Switch Register \n");
+		consoleCommandPrompt.append("3) Add Sale \n");
+		consoleCommandPrompt.append("4) Return Sale \n");
+		consoleCommandPrompt.append("5) Return Item in Current Sale \n");
+		consoleCommandPrompt.append("6) Complete Current Sale \n");
+		consoleCommandPrompt.append("7) Stop POS System \n");
+		
+		while(!commandOption.equals("7"))
+		{	
+			showCurrentRegister();
 			System.out.print(consoleCommandPrompt);
 			
-			commandOption = in.nextInt();
-			
+			commandOption =in.nextLine();
+
 			switch(commandOption)
 			{
-				case 1: 			
+				case "1": 			
 					// Authentication Flow
-					while(!validCredentials)
+					while(reAuthenticate)
 					{
 						// prompt for user credentials
-						System.out.println("Username: ");
-						username = in.nextLine();
-						System.out.println("\n Password: ");
-						password = in.nextLine();
-						validCredentials = validateCredentials(username, password);
-						
-						// if invalid, provide error and loop around prompt
+						validCredentials = authenticate(in);
 						if(!validCredentials)
 						{
-							System.out.println("Invalid Credentials Provided.");
+							System.out.println("Do you wish to re-authenticate? (Yes/No)");
+							String reauthenticateResponse = in.nextLine();
+							if(reauthenticateResponse.equalsIgnoreCase("no"))
+							{
+								reAuthenticate = false;
+							}
+						}
+						else
+						{
+							reAuthenticate = false;
 						}
 					}
-					
-					// Retrieve Cashier Data
-					Cashier cashier = retrieveCashier(username);
-					
-					// Setup Register
-					Register register = new Register(cashier);
-					// Add register to collection of registers
-					registers.add(register);
-					// set application's active register
-					activeRegister = register;
+					if(validCredentials)
+					{
+						// Retrieve Cashier Data
+						cashier = retrieveCashier(username);
+						
+						// Setup Register
+						Register register = new Register(cashier);
+						// Add register to collection of registers
+						registers.add(register);
+						// set application's active register
+						activeRegister = register;
+					}
+					reAuthenticate = true;
 					break;
 				
-				case 2: 
+				case "2": 
+					if(registers.size() == 0)
+					{
+						System.out.println("No Possible Open Registers at this time.");
+						break;
+					}
+					
 					// Display all available registers
 					System.out.println("All Available Registers \n");
 					for(Register reg: registers)
@@ -75,30 +91,66 @@ public class Console
 					}
 					System.out.println("Enter a register number: \n");
 					// Take input from user
-					int regNumber = in.nextInt();
-					// Search for user inputed register id
-					Register newActiveRegister = registers.stream()
-							.filter(r -> r.getRegisterId() == regNumber)
-							.findFirst()
-							.orElse(null);
-					// Set active register if available and prompt user of change
-					if(newActiveRegister != null)
+					String regNumber = in.nextLine();
+					try
 					{
-						activeRegister = newActiveRegister;
-						System.out.println(String.format("Register Set to %s", regNumber));
+						// Search for user inputed register id
+						Register newActiveRegister = registers.stream()
+								.filter(r -> r.getRegisterId() == Integer.parseInt(regNumber))
+								.findFirst()
+								.orElse(null);
+						// Set active register if available and prompt user of change
+						if(newActiveRegister != null)
+						{
+							// Authentication Flow
+							while(reAuthenticate)
+							{
+								// prompt for user credentials
+								validCredentials = authenticate(in);
+								if(!validCredentials)
+								{
+									System.out.println("Do you wish to re-authenticate? (Yes/No)");
+									String reauthenticateResponse = in.nextLine();
+									if(reauthenticateResponse.equalsIgnoreCase("no"))
+									{
+										reAuthenticate = false;
+									}
+								}
+								else
+								{
+									reAuthenticate = false;
+								}
+							}
+							if(validCredentials)
+							{
+								activeRegister = newActiveRegister;
+								cashier = retrieveCashier(username);
+								System.out.println(String.format("Register Set to %s", regNumber));
+							}
+							reAuthenticate = true;
+						}
+						// Prompt user of no change if register is not valid
+						else 
+						{
+							System.out.println("Register Not Found \n");
+						}
 					}
-					// Prompt user of no change if register is not valid
-					else 
+					catch(Exception e)
 					{
-						System.out.println("Register Not Found \n");
-						System.out.println(String.format("Register Set to %s", activeRegister.getRegisterId()));
+						System.out.println("Invalid Register Id");
 					}
+					
 					break;
-				case 3: 
+				case "3":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before adding a sale.");
+						break;
+					}
 					try {
 						// Try to Create a new Sale
 						//TODO: Fill in Sale information
-						activeRegister.createSale();
+						//activeRegister.createSale();
 					} 
 					catch(Exception e)
 					{
@@ -107,7 +159,12 @@ public class Console
 						System.out.print(e.getMessage());
 					}
 					break;
-				case 4:
+				case "4":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before returning a sale.");
+						break;
+					}
 					try {
 						//TODO: Prompt sale return (allow even if we have a current active sale?)
 						//TODO: return sale via register 
@@ -119,7 +176,12 @@ public class Console
 						System.out.print(e.getMessage());
 					}
 					break;
-				case 5: 
+				case "5": 
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before returning an item.");
+						break;
+					}
 					try {
 						//TODO: Prompt item return 
 						//TODO: return item via register 
@@ -131,7 +193,12 @@ public class Console
 						System.out.print(e.getMessage());
 					}
 					break;
-				case 6:
+				case "6":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before completing a sale.");
+						break;
+					}
 					try {
 						//TODO: complete active sale via register 
 					} 
@@ -142,7 +209,7 @@ public class Console
 						System.out.print(e.getMessage());
 					}
 					break;
-				case 7:
+				case "7":
 					System.out.println("POS System is closing \n");
 					break;
 				default: break;
@@ -163,7 +230,7 @@ public class Console
 		return employees.get(username);
 	}
 	
-	// Mocks Auth Flow
+	// Mocks Authentication Flow
 	private static boolean validateCredentials(String username, String password)
 	{
 		// Mimic Some form of authentication 
@@ -176,11 +243,45 @@ public class Console
 			return false;
 		}
 		// if user name exists, check the password and short circuit if need be.
-		if(validCredentials.get(username) != password)
+
+		if(!validCredentials.get(username).equals(password.toString()))
 		{
 			return false;
 		}
 		// assume credentials are valid and return true
 		return true;
+	}
+	
+	private static void showCurrentRegister()
+	{
+		if(activeRegister != null)
+		{
+			System.out.println(String.format("Current Register: %s", activeRegister.getRegisterId()));
+			System.out.println(String.format("Logged in as: %s %s", cashier.getFirstName(), cashier.getLastName()));
+		}
+		else
+		{
+			System.out.println("You are not logged into any register.");
+		}
+	}
+	
+	private static boolean authenticate(Scanner in)
+	{
+		boolean validCredentials = false;
+		// prompt for user credentials
+		System.out.println("Username: \n");
+		username = in.nextLine();
+
+		System.out.println("Password: ");
+		password = in.nextLine();
+		validCredentials = validateCredentials(username, password);
+
+		// if invalid, provide error and loop around prompt
+		if(!validCredentials)
+		{
+			System.out.println("Invalid Credentials Provided. \n");
+			
+		}
+		return validCredentials;
 	}
 }

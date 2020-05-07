@@ -95,7 +95,7 @@ public class Sale
 		
 		return isVoided;
 	}
-	
+	// TODO: maybe we don't need this method and just let the register handle all returns/voids
 	public void voidSales() {
 		List<Map<ItemStatus, Item>> itemSaleList = this.itemList;
 		// Return all active items to inventory
@@ -105,6 +105,8 @@ public class Sale
 			Item item = itemMap.get(ItemStatus.ACTIVE);
 			if(item != null)
 			{
+				//Update Sale List
+				returnItem(item);
 				// Update inventory
 			}
 		}
