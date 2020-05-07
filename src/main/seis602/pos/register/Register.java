@@ -60,11 +60,14 @@ public class Register
 	
 	public void createSale(Sale newSale) throws Exception
 	{
-		// check for active sale
-		if(activeSale.getStatus() == Status.ACTIVE)
+		if(activeSale != null) 
 		{
-			// throw exception if we have an active sales already
-			throw new Exception("Current Sale is still active");
+			// check for active sale
+			if(activeSale.getStatus() == Status.ACTIVE)
+			{
+				// throw exception if we have an active sales already
+				throw new Exception("Current Sale is still active");
+			}
 		}
 		
 		this.activeSale = newSale;
@@ -72,6 +75,11 @@ public class Register
 	
 	public void completeSale() throws Exception
 	{
+		if(activeSale != null) 
+		{
+			// throw exception if we have do not have an active sale currently
+			throw new Exception("No Active Sale to Complete");
+		}
 		// check for non active sale
 		if(activeSale.getStatus() != Status.ACTIVE)
 		{			
@@ -86,38 +94,38 @@ public class Register
 		this.sales.add(this.activeSale);
 	}
 	
-	public void returnSale(int saleId) throws Exception
+	public void returnSale(Sale sale) throws Exception
 	{
 		// Use a stream to find the sale with saleId from the collection of sales
 		// Note: It would be nice to have the list of sales as static but we'd have to figure out a way to 
 		// update the total sales property on the appropriate register without the use of a database which could
 		// potentially get messy. For simplicity sake the list of sales will be respective to its own class
-		Sale sale = sales.stream()
-				.filter(s -> s.getSaleId() == saleId)
+		Sale saleToReturn = sales.stream()
+				.filter(s -> s.getSaleId() == sale.getSaleId())
 				.findFirst()
 				.orElse(null);
 		//check for existing sale
-		if(sale == null)
+		if(saleToReturn == null)
 		{
 			// throw exception if sale does not exist on registerId
-			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
+			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", sale.getSaleId(), registerId));
 		}
 		
 		// Set Sale Status as Returned
-		sale.setStatus(Status.RETURNED);
+		saleToReturn.setStatus(Status.RETURNED);
 		
 		// return all items in sale to inventory and mark it respectively in its sale
-		for(Map<ItemStatus, Item> item : sale.getItemList())
+		for(Map<ItemStatus, Item> item : saleToReturn.getItemList())
 		{
-			sale.returnItem(item.get(ItemStatus.ACTIVE));
+			saleToReturn.returnItem(item.get(ItemStatus.ACTIVE));
 			//inventory.add(item);
 		}
 		
 		// Reduce total sales amount but returned sale amount
-		this.totalSales -= sale.getTotal();
+		this.totalSales -= saleToReturn.getTotal();
 	}
 	
-	public Refund returnSaleItem(Item itemToReturn, int saleId) throws Exception
+	public Refund returnSaleItem(String itemName, int saleId) throws Exception
 	{
 		Refund refund = new Refund();
 		// Get respective sale
@@ -131,28 +139,30 @@ public class Register
 			// throw exception if sale does not exist on registerId
 			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
 		}
-//		// get Item from Sales Item List
-//		Map<ItemStatus, Item> item = sale.getItemList().stream()
-//				.filter(i -> i.containsKey(ItemStatus.ACTIVE) && i.containsValue(itemToReturn))
-//				.findFirst()
-//				.orElse(null);
-//		
-//		//check for existing item in sale
-//		if(item == null)
-//		{
-//			// throw exception if item does not exist on sale
-//			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", item.getItemId(), saleId));
-//		}
+		// get Item from Sales Item List
+		Item item = sale.getItem(itemName);
+		
+		//check for existing item in sale
+		if(item == null)
+		{
+			// throw exception if item does not exist on sale
+			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", item.getName(), saleId));
+		}
 		// return item
-		boolean returnedSuccess = sale.returnItem(itemToReturn);
+		boolean returnedSuccess = sale.returnItem(item);
 		
 		if(returnedSuccess)
 		{
 			refund.setSalesId(sale.getSaleId());
-			refund.setItemName(itemToReturn.getName());
-			refund.setRefundAmount(itemToReturn.getPrice());
+			refund.setItemName(item.getName());
+			refund.setRefundAmount(item.getPrice());
 		}
 		return refund;
+	}
+	
+	public int getAmountOfSale()
+	{
+		return this.sales.size();
 	}
 	
 	public void printInventoryReport()

@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import main.seis602.pos.inventory.Item;
 import main.seis602.pos.register.Cashier;
+import main.seis602.pos.register.ItemStatus;
 import main.seis602.pos.register.Register;
+import main.seis602.pos.register.Sale;
 
 public class Console 
 {
@@ -27,17 +30,20 @@ public class Console
 		consoleCommandPrompt.append("1) Log in to new register as new employee \n");
 		consoleCommandPrompt.append("2) Switch Register \n");
 		consoleCommandPrompt.append("3) Add Sale \n");
-		consoleCommandPrompt.append("4) Return Sale \n");
-		consoleCommandPrompt.append("5) Return Item in Current Sale \n");
-		consoleCommandPrompt.append("6) Complete Current Sale \n");
-		consoleCommandPrompt.append("7) Stop POS System \n");
+		consoleCommandPrompt.append("4) Add Item to Sale \n");
+		consoleCommandPrompt.append("5) Return Sale \n");
+		consoleCommandPrompt.append("6) Return Item in Current Sale \n");
+		consoleCommandPrompt.append("7) Complete Current Sale \n");
+		consoleCommandPrompt.append("8) Stop POS System \n");
 		
-		while(!commandOption.equals("7"))
+		while(!commandOption.equals("8"))
 		{	
 			showCurrentRegister();
+			showCurrentSale();
+			
 			System.out.print(consoleCommandPrompt);
 			
-			commandOption =in.nextLine();
+			commandOption = in.nextLine();
 
 			switch(commandOption)
 			{
@@ -148,68 +154,134 @@ public class Console
 						break;
 					}
 					try {
-						// Try to Create a new Sale
-						//TODO: Fill in Sale information
-						//activeRegister.createSale();
+						activeRegister.createSale(new Sale());
 					} 
 					catch(Exception e)
 					{
-						// if there were any problems creating the sale
-						// log the output
-						System.out.print(e.getMessage());
+						System.out.print(e);
 					}
 					break;
 				case "4":
 					if(activeRegister == null)
 					{
-						System.out.println("Please log into a register before returning a sale.");
+						System.out.println("Please log into a register before adding an item to a sale.");
 						break;
 					}
 					try {
-						//TODO: Prompt sale return (allow even if we have a current active sale?)
-						//TODO: return sale via register 
+						//TODO: Add item to Sale
 					} 
 					catch(Exception e)
 					{
-						// if there were any problems
-						// log the output
-						System.out.print(e.getMessage());
+						System.out.print(e);
 					}
 					break;
-				case "5": 
+				case "5":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before returning a sale.");
+						break;
+					}
+					if(activeRegister.getSales().size() == 0)
+					{
+						System.out.println("No Possible Sales to return at this time.");
+						break;
+					}
+					try {
+						// Display all Sales on current active register
+						// Do we want all sales to be available from all registers?
+						System.out.println("All Available Sales on current active register. \n");
+						for(Sale sale: activeRegister.getSales())
+						{
+							System.out.println(String.format("Register Number: %s", sale.getSaleId()));
+						}
+						System.out.println("Enter a sale id to return: \n");
+						// Take input from user
+						String saleId = in.nextLine();
+						try
+						{
+							// Search for user inputed sale id
+							Sale saleToReturn = activeRegister.getSales().stream()
+									.filter(r -> r.getSaleId() == Integer.parseInt(saleId))
+									.findFirst()
+									.orElse(null);
+							//return sale via register 
+							activeRegister.returnSale(saleToReturn);
+							
+						}
+						catch(Exception e)
+						{
+							System.out.println("Invalid Sale Id");
+						}
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					break;
+				case "6": 
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before returning an item.");
 						break;
 					}
 					try {
-						//TODO: Prompt item return 
-						//TODO: return item via register 
+						//Prompt item return
+						System.out.println("All Available Sales on current active register. \n");
+						for(Sale sale: activeRegister.getSales())
+						{
+							System.out.println(String.format("Sale Number: %s", sale.getSaleId()));
+						}
+						System.out.println("Enter a sale id to return: \n");
+						// Take input from user
+						String saleId = in.nextLine();
+						try
+						{
+							int integerSaleId = Integer.parseInt(saleId);
+							// Search for user inputed sale id
+							Sale sale = activeRegister.getSales().stream()
+									.filter(r -> r.getSaleId() == integerSaleId)
+									.findFirst()
+									.orElse(null);
+							// Display All items in sale to choose from
+							for(Map<ItemStatus, Item> itemMap : sale.getItemList())
+							{
+								Item item = itemMap.get(ItemStatus.ACTIVE);
+								System.out.println(
+										String.format("Item Name : %s", item.getName()));
+							}
+							System.out.println("Enter an item to return: \n");
+							// Take input from user
+							String itemName = in.nextLine();
+							//return item via register 
+							activeRegister.returnSaleItem(itemName, integerSaleId);
+							
+						}
+						catch(Exception e)
+						{
+							System.out.println("Invalid Sale Id");
+						}
 					} 
 					catch(Exception e)
 					{
-						// if there were any problems
-						// log the output
-						System.out.print(e.getMessage());
+						System.out.print(e);
 					}
 					break;
-				case "6":
+				case "7":
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before completing a sale.");
 						break;
 					}
 					try {
-						//TODO: complete active sale via register 
+						// complete active sale via register 
+						activeRegister.completeSale();
 					} 
 					catch(Exception e)
 					{
-						// if there were any problems
-						// log the output
-						System.out.print(e.getMessage());
+						System.out.print(e);
 					}
 					break;
-				case "7":
+				case "8":
 					System.out.println("POS System is closing \n");
 					break;
 				default: break;
@@ -262,6 +334,17 @@ public class Console
 		else
 		{
 			System.out.println("You are not logged into any register.");
+		}
+	}
+	
+	private static void showCurrentSale()
+	{
+		if(activeRegister != null)
+		{
+			if(activeRegister.getActiveSale() != null)
+			{
+				System.out.println(String.format("Current Sale Id: %s", activeRegister.getActiveSale().getSaleId()));
+			}
 		}
 	}
 	

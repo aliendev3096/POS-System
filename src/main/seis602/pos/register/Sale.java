@@ -12,6 +12,7 @@ import main.seis602.pos.inventory.Item;
 
 public class Sale 
 {
+	private static int identifier = 5563;
 	private int saleId;
 	private Status status;
 	private Date date;
@@ -20,7 +21,9 @@ public class Sale
 	
 	public Sale()
 	{
-		this.status = Status.ACTIVE;
+		this.status = Status.ACTIVE;	
+		saleId = identifier;
+		identifier++;
 	}
 	
 	public int getSaleId() {
@@ -128,7 +131,26 @@ public class Sale
 				break;
 			}
 		}
-		
 		return isReturned;
+	}
+	
+	public Item getItem(String itemName)
+	{
+		// Get all active items
+		ArrayList<Item> activeItems = new ArrayList<Item>();
+		for(Map<ItemStatus, Item> itemMap : this.itemList) {
+			if(itemMap.containsKey(ItemStatus.ACTIVE)) 
+			{
+				Item item = itemMap.get(ItemStatus.ACTIVE);
+				// Found the item, return it.
+				if(item.getName() == itemName)
+				{
+					return item;
+				}
+			}
+		}
+		// We did not find the item
+		return null;
+		
 	}
 }
