@@ -79,24 +79,33 @@ public class Sale
 		}
 	}
 	
-	public void voidItem(Item item) {
+	public boolean voidItem(Item item) {
+		boolean isVoided = false;
 		for(Map<ItemStatus, Item> itemMap : this.itemList) {
-			if(itemMap.containsKey(item.getName())) { // Item found in the sales list
-				this.itemList.remove(itemMap); // remove the item from the sales list
+			if(itemMap.containsKey(ItemStatus.ACTIVE) && itemMap.containsValue(item)) { // Item found in the sales list
+				itemMap.remove(ItemStatus.ACTIVE, item); // remove the item from the sales list
+				itemMap.put(ItemStatus.VOID, item); // add item to the sales list with returned status
 				setTotal(getTotal() - item.getPrice()); // adjust the sales total price
 				item.setOnHandQuantity(item.getOnHandQuantity() + 1); // adjust the item onHandQuantity
+				
+				isVoided = true;
 				break;
 			}
 		}
+		
+		return isVoided;
 	}
 	
 	public void voidSales() {
-		List<Map<ItemStatus, Item>> salesList = this.itemList;
-		for(Map<ItemStatus, Item> itemMap : salesList) {
-			Set<Entry<String, Item>> entrySet = itemMap.entrySet();
-			for(Entry<String, Item> entry: entrySet) {
-				Item item = entry.getValue();
-				item.setOnHandQuantity(item.getOnHandQuantity() + 1);
+		List<Map<ItemStatus, Item>> itemSaleList = this.itemList;
+		// Return all active items to inventory
+		for(Map<ItemStatus, Item> itemMap : itemSaleList) {
+			// We only care if the item is ACTIVE, otherwise its probably 
+			// already been returned to inventory
+			Item item = itemMap.get(ItemStatus.ACTIVE);
+			if(item != null)
+			{
+				// Update inventory
 			}
 		}
 		this.itemList = null;
