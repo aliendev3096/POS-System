@@ -1,0 +1,76 @@
+package main.seis602.pos.register;
+
+import org.junit.*;
+
+import main.seis602.pos.inventory.Item;
+
+public class SaleShould {
+
+	@Test
+	public void ReturnItemOnCompleteSale()
+	{
+
+		Sale newSale = new Sale();
+		Item orangeItem = new Item("Orange", 2.99, null);
+		
+		newSale.addItem(new Item("Apple", 5.99, null));
+		newSale.addItem(orangeItem);
+		newSale.addItem(new Item("Chocolate", 3.99, null));
+		
+		Assert.assertEquals(12.97, newSale.getTotal(), .01);
+		newSale.setStatus(Status.COMPLETED);
+
+		newSale.returnItem(orangeItem);
+		
+		Assert.assertEquals(9.98, newSale.getTotal(), .01);
+		Assert.assertNull(newSale.getItem("Orange", ItemStatus.ACTIVE));
+		Assert.assertNotNull(newSale.getItem("Orange", ItemStatus.RETURNED));
+	}
+	
+	@Test
+	public void VoidItemOnActiveSale()
+	{
+		// Arrange
+		Sale newSale = new Sale();
+		Item orangeItem = new Item("Orange", 2.99, null);
+		
+		newSale.addItem(new Item("Apple", 5.99, null));
+		newSale.addItem(orangeItem);
+		newSale.addItem(new Item("Chocolate", 3.99, null));
+		
+		Assert.assertEquals(12.97, newSale.getTotal(), .01);
+		//Act 
+		newSale.voidItem(orangeItem);
+		
+		//Assert
+		Assert.assertEquals(9.98, newSale.getTotal(), .01);
+		Assert.assertNull(newSale.getItem("Orange", ItemStatus.ACTIVE));
+		Assert.assertNotNull(newSale.getItem("Orange", ItemStatus.VOID));
+	}
+	
+	@Test
+	public void VoidSale()
+	{
+		// Arrange
+		Sale newSale = new Sale();
+		Item orangeItem = new Item("Orange", 2.99, null);
+		
+		newSale.addItem(new Item("Apple", 5.99, null));
+		newSale.addItem(orangeItem);
+		newSale.addItem(new Item("Chocolate", 3.99, null));
+		
+		Assert.assertEquals(12.97, newSale.getTotal(), .01);
+		//Act 
+		newSale.voidSale();
+		
+		//Assert
+		Assert.assertEquals(0, newSale.getTotal(), .01);
+		Assert.assertEquals(Status.CANCELED, newSale.getStatus());
+		Assert.assertNull(newSale.getItem("Orange", ItemStatus.ACTIVE));
+		Assert.assertNull(newSale.getItem("Apple", ItemStatus.ACTIVE));
+		Assert.assertNull(newSale.getItem("Chocolate", ItemStatus.ACTIVE));
+		Assert.assertNotNull(newSale.getItem("Orange", ItemStatus.VOID));
+		Assert.assertNotNull(newSale.getItem("Apple", ItemStatus.VOID));
+		Assert.assertNotNull(newSale.getItem("Chocolate", ItemStatus.VOID));
+	}
+}

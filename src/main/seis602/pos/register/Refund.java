@@ -1,22 +1,31 @@
 package main.seis602.pos.register;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Refund 
 {
-	private int salesId;
-	private String itemName;
+	private static int refundId = 0;
+	private int saleId;
+	private List<String> items;
 	private double refundAmount;
 	
-	public int getSalesId() {
-		return salesId;
+	public Refund()
+	{
+		refundId++;
+		items = new ArrayList<String>();
 	}
-	public void setSalesId(int salesId) {
-		this.salesId = salesId;
+	public int getSaleId() {
+		return saleId;
 	}
-	public String getItemName() {
-		return itemName;
+	public void setSaleId(int salesId) {
+		this.saleId = salesId;
 	}
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
+	public List<String> getItems() {
+		return items;
+	}
+	public void addItem(String itemName) {
+		this.items.add(itemName);
 	}
 	public double getRefundAmount() {
 		return refundAmount;
