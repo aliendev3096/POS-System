@@ -392,9 +392,9 @@ public class Console
 	{
 		// In memory user database 
 		Map<String, Cashier> employees = Map.of(
-				"manager101", new Cashier("Mike", "Manager"),
-				"associate987", new Cashier("Ashley", "Associate"),
-				"associate122", new Cashier("Andy", "Associate"));
+				"manager101", new Cashier("Mike", "Manager", 536267),
+				"associate987", new Cashier("Ashley", "Associate", 454653),
+				"associate122", new Cashier("Andy", "Associate", 534534));
 		return employees.get(username);
 	}
 	
@@ -422,10 +422,12 @@ public class Console
 	
 	private static void showCurrentRegister()
 	{
+		System.out.println(String.format("Amount of Registers Open: %s", registers.size()));
 		if(activeRegister != null)
 		{
 			System.out.println(String.format("Current Register: %s", activeRegister.getRegisterId()));
-			System.out.println(String.format("Logged in as: %s %s", cashier.getFirstName(), cashier.getLastName()));
+			System.out.println(String.format("Amount of Sales in Register: %s", activeRegister.getAmountOfSales()));
+			System.out.println(String.format("Logged in as: %s %s Id: %s", cashier.getFirstName(), cashier.getLastName(), cashier.getCashierId()));
 		}
 		else
 		{
@@ -454,7 +456,7 @@ public class Console
 	{
 		// Generate Prompt in watch mode style
 		StringBuilder consoleCommandPrompt = new StringBuilder("Command: \n");
-		consoleCommandPrompt.append("1) Log in to new register as new employee \n");
+		consoleCommandPrompt.append("1) Log in to open a register \n");
 		consoleCommandPrompt.append("2) Switch Register \n");
 		consoleCommandPrompt.append("3) Add Sale \n");
 		consoleCommandPrompt.append("4) Cancel Current Sale \n");

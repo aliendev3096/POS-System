@@ -2,17 +2,15 @@ package main.seis602.pos.register;
 
 public class Cashier 
 {
-	private static int identifier = 0;
 	private int cashierId;
 	private String firstName;
 	private String lastName;
 	
-	public Cashier(String firstName, String lastName)
+	public Cashier(String firstName, String lastName, int id)
 	{
 		this.firstName = firstName;
 		this.lastName = lastName;
-		cashierId = identifier;
-		identifier++;
+		cashierId = id;
 	}
 	
 	public int getCashierId() {
