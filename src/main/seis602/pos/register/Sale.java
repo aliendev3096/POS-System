@@ -21,7 +21,8 @@ public class Sale
 	
 	public Sale()
 	{
-		this.status = Status.ACTIVE;	
+		this.status = Status.ACTIVE;
+		date = new Date();
 		saleId = identifier;
 		identifier++;
 	}
@@ -50,11 +51,21 @@ public class Sale
 		this.date = date;
 	}
 	
-	public List<Map<ItemStatus, Item>> getItemList() {
+	public List<Item> getItemList() {
+		ArrayList<Item> items = new ArrayList<Item>();
 		if(itemList == null) {
-			itemList = new ArrayList<Map<ItemStatus, Item>>();
+			return items;
 		}
-		return itemList;
+		
+		for(Map<ItemStatus, Item> itemMap : itemList)
+		{
+			Item item = itemMap.get(ItemStatus.ACTIVE);
+			if(item != null)
+			{
+				items.add(item);
+			}
+		}
+		return items;
 	}
 	
 	public void setItemList(List<Map<ItemStatus, Item>> itemList) {
@@ -120,12 +131,23 @@ public class Sale
 	
 	public boolean returnItem(Item item) {
 		boolean isReturned = false;
-		for(Map<ItemStatus, Item> itemMap : this.itemList) {
-			if(itemMap.containsKey(ItemStatus.ACTIVE) && itemMap.containsValue(item)) { // Item found in the sales list
-				itemMap.remove(ItemStatus.ACTIVE, item); // remove the item from the sales list
-				itemMap.put(ItemStatus.RETURNED, item); // add item to the sales list with returned status
-				setTotal(getTotal() - item.getPrice()); // adjust the sales total price
-				item.setOnHandQuantity(item.getOnHandQuantity() + 1); // adjust the item onHandQuantity
+		for(Item itemInList : this.getItemList()) {
+			// Item found in the sales list
+			if(itemInList.getName() == item.getName()) { 
+				// remove the item from the sales list
+				this.itemList.remove(Map.of(ItemStatus.ACTIVE, item)); 
+				// if the sale was already completed the we mark the item as returned
+				// if the sale is still active, don't add the item back into the list
+				// upon a cancellation of an item
+				if(this.status != Status.ACTIVE)
+				{
+					// add item to the sales list with returned status
+					this.itemList.add(Map.of(ItemStatus.RETURNED, item));
+				}
+				// adjust the sales total price
+				setTotal(getTotal() - item.getPrice());
+				// adjust the item onHandQuantity
+				item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
 				
 				isReturned = true;
 				break;

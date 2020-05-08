@@ -25,23 +25,12 @@ public class Console
 		boolean reAuthenticate = true;
 		String commandOption = "0";
 		
-		// Generate Prompt in watch mode style
-		StringBuilder consoleCommandPrompt = new StringBuilder("Command: \n");
-		consoleCommandPrompt.append("1) Log in to new register as new employee \n");
-		consoleCommandPrompt.append("2) Switch Register \n");
-		consoleCommandPrompt.append("3) Add Sale \n");
-		consoleCommandPrompt.append("4) Add Item to Sale \n");
-		consoleCommandPrompt.append("5) Return Sale \n");
-		consoleCommandPrompt.append("6) Return Item in Current Sale \n");
-		consoleCommandPrompt.append("7) Complete Current Sale \n");
-		consoleCommandPrompt.append("8) Stop POS System \n");
 		
-		while(!commandOption.equals("8"))
+		while(!commandOption.equals("9"))
 		{	
 			showCurrentRegister();
 			showCurrentSale();
-			
-			System.out.print(consoleCommandPrompt);
+			showCommandPrompt();
 			
 			commandOption = in.nextLine();
 
@@ -85,7 +74,7 @@ public class Console
 				case "2": 
 					if(registers.size() == 0)
 					{
-						System.out.println("No Possible Open Registers at this time.");
+						System.out.println("No Possible Open Registers at this time. \\n");
 						break;
 					}
 					
@@ -143,14 +132,19 @@ public class Console
 					}
 					catch(Exception e)
 					{
-						System.out.println("Invalid Register Id");
+						System.out.println("Invalid Register Id \n");
 					}
 					
 					break;
 				case "3":
 					if(activeRegister == null)
 					{
-						System.out.println("Please log into a register before adding a sale.");
+						System.out.println("Please log into a register before adding a sale. \n");
+						break;
+					}
+					if(activeRegister.getActiveSale() != null)
+					{
+						System.out.println("Active Sale already in session. \n");
 						break;
 					}
 					try {
@@ -164,11 +158,20 @@ public class Console
 				case "4":
 					if(activeRegister == null)
 					{
-						System.out.println("Please log into a register before adding an item to a sale.");
+						System.out.println("Please log into a register before adding an item to a sale. \n");
+						break;
+					}
+					if(activeRegister.getActiveSale() == null)
+					{
+						System.out.println("No sale to add item too. \n");
 						break;
 					}
 					try {
-						//TODO: Add item to Sale
+						// Take input from user
+						System.out.println("Enter an item to add to sale \n");
+						String itemName = in.nextLine();
+						
+						activeRegister.addItem(itemName);
 					} 
 					catch(Exception e)
 					{
@@ -178,12 +181,44 @@ public class Console
 				case "5":
 					if(activeRegister == null)
 					{
-						System.out.println("Please log into a register before returning a sale.");
+						System.out.println("Please log into a register before removing an item from a sale. \n");
+						break;
+					}
+					if(activeRegister.getActiveSale() == null)
+					{
+						System.out.println("No sale to remove item. \n");
+						break;
+					}
+					try {
+						// Display all items on current active register sale
+						System.out.println("All Available Items on current active sale. \n");
+						for(Item item: activeRegister.getActiveSale().getItemList())
+						{
+							System.out.println(String.format("Item Name: %s", item.getName()));
+						}
+						// Take input from user
+						System.out.println("Enter an item to remove from sale \n");
+						String itemName = in.nextLine();
+						
+						//Remove item from sale
+						activeRegister.removeItem(itemName);
+						
+						//TODO: Remo
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					break;
+				case "6":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before returning a sale. \n");
 						break;
 					}
 					if(activeRegister.getSales().size() == 0)
 					{
-						System.out.println("No Possible Sales to return at this time.");
+						System.out.println("No Possible Sales to return at this time. \n");
 						break;
 					}
 					try {
@@ -210,7 +245,7 @@ public class Console
 						}
 						catch(Exception e)
 						{
-							System.out.println("Invalid Sale Id");
+							System.out.println("Invalid Sale Id \n");
 						}
 					} 
 					catch(Exception e)
@@ -218,10 +253,15 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "6": 
+				case "7": 
 					if(activeRegister == null)
 					{
-						System.out.println("Please log into a register before returning an item.");
+						System.out.println("Please log into a register before returning an item. \n");
+						break;
+					}
+					if(activeRegister.getSales().size() == 0)
+					{
+						System.out.println("No Possible Sales to return an item at this time. \n");
 						break;
 					}
 					try {
@@ -242,13 +282,20 @@ public class Console
 									.filter(r -> r.getSaleId() == integerSaleId)
 									.findFirst()
 									.orElse(null);
-							// Display All items in sale to choose from
-							for(Map<ItemStatus, Item> itemMap : sale.getItemList())
+							
+							if(sale == null)
 							{
-								Item item = itemMap.get(ItemStatus.ACTIVE);
+								// throw exception if sale does not exist on registerId
+								throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, activeRegister.getRegisterId()));
+							}
+							
+							// Display All items in sale to choose from
+							for(Item item : sale.getItemList())
+							{
 								System.out.println(
 										String.format("Item Name : %s", item.getName()));
 							}
+							
 							System.out.println("Enter an item to return: \n");
 							// Take input from user
 							String itemName = in.nextLine();
@@ -258,7 +305,7 @@ public class Console
 						}
 						catch(Exception e)
 						{
-							System.out.println("Invalid Sale Id");
+							System.out.println(e);
 						}
 					} 
 					catch(Exception e)
@@ -266,10 +313,10 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "7":
+				case "8":
 					if(activeRegister == null)
 					{
-						System.out.println("Please log into a register before completing a sale.");
+						System.out.println("Please log into a register before completing a sale. \n");
 						break;
 					}
 					try {
@@ -281,7 +328,7 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "8":
+				case "9":
 					System.out.println("POS System is closing \n");
 					break;
 				default: break;
@@ -346,6 +393,23 @@ public class Console
 				System.out.println(String.format("Current Sale Id: %s", activeRegister.getActiveSale().getSaleId()));
 			}
 		}
+	}
+	
+	private static void showCommandPrompt()
+	{
+		// Generate Prompt in watch mode style
+		StringBuilder consoleCommandPrompt = new StringBuilder("Command: \n");
+		consoleCommandPrompt.append("1) Log in to new register as new employee \n");
+		consoleCommandPrompt.append("2) Switch Register \n");
+		consoleCommandPrompt.append("3) Add Sale \n");
+		consoleCommandPrompt.append("4) Add Item to Sale \n");
+		consoleCommandPrompt.append("5) Remove Item in Sale \n");
+		consoleCommandPrompt.append("6) Return Sale \n");
+		consoleCommandPrompt.append("7) Return Item \n");
+		consoleCommandPrompt.append("8) Complete Current Sale \n");
+		consoleCommandPrompt.append("9) Stop POS System \n");
+		
+		System.out.print(consoleCommandPrompt);
 	}
 	
 	private static boolean authenticate(Scanner in)

@@ -58,6 +58,22 @@ public class Register
 		return registerId;
 	}
 	
+	public void addItem(String itemName) throws Exception
+	{
+		// TODO: Pull item from inventory
+		
+		// Add item to active sale
+		// this.activeSale.addItem(item);
+	}
+	
+	public void removeItem(String itemName) throws Exception
+	{
+		// TODO: Add item back into inventory
+		
+		// Remove item from active sale
+		//this.activeSale.returnItem(item);
+	}
+	
 	public void createSale(Sale newSale) throws Exception
 	{
 		if(activeSale != null) 
@@ -75,16 +91,16 @@ public class Register
 	
 	public void completeSale() throws Exception
 	{
-		if(activeSale != null) 
+		if(activeSale == null) 
 		{
 			// throw exception if we have do not have an active sale currently
-			throw new Exception("No Active Sale to Complete");
+			throw new Exception("No Active Sale to Complete \n");
 		}
 		// check for non active sale
 		if(activeSale.getStatus() != Status.ACTIVE)
 		{			
 			// throw exception if we have do not have an active sale currently
-			throw new Exception("Current active sale is not active, there is no sale to complete");
+			throw new Exception("Current sale is no longer active, there is no sale to complete \n");
 		}
 		
 		//set activeSale status to complete
@@ -114,12 +130,14 @@ public class Register
 		// Set Sale Status as Returned
 		saleToReturn.setStatus(Status.RETURNED);
 		
-		// return all items in sale to inventory and mark it respectively in its sale
-		for(Map<ItemStatus, Item> item : saleToReturn.getItemList())
+		// return all items in sale marking it respectively
+		for(Item item : saleToReturn.getItemList())
 		{
-			saleToReturn.returnItem(item.get(ItemStatus.ACTIVE));
+			saleToReturn.returnItem(item);
 			//inventory.add(item);
 		}
+		
+		// TODO: return all items to inventory
 		
 		// Reduce total sales amount but returned sale amount
 		this.totalSales -= saleToReturn.getTotal();
@@ -133,12 +151,7 @@ public class Register
 				.filter(s -> s.getSaleId() == saleId)
 				.findFirst()
 				.orElse(null);
-		//check for existing sale
-		if(sale == null)
-		{
-			// throw exception if sale does not exist on registerId
-			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
-		}
+
 		// get Item from Sales Item List
 		Item item = sale.getItem(itemName);
 		
@@ -148,8 +161,10 @@ public class Register
 			// throw exception if item does not exist on sale
 			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", item.getName(), saleId));
 		}
-		// return item
+		// return item relative to the sale
 		boolean returnedSuccess = sale.returnItem(item);
+		
+		// TODO: return item relative to inventory
 		
 		if(returnedSuccess)
 		{
