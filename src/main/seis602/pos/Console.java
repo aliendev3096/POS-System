@@ -26,7 +26,7 @@ public class Console
 		String commandOption = "0";
 		
 		
-		while(!commandOption.equals("9"))
+		while(!commandOption.equals("12"))
 		{	
 			showCurrentRegister();
 			showCurrentSale();
@@ -148,6 +148,7 @@ public class Console
 						break;
 					}
 					try {
+						// Create new sale
 						activeRegister.createSale(new Sale());
 					} 
 					catch(Exception e)
@@ -156,6 +157,26 @@ public class Console
 					}
 					break;
 				case "4":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before canceling a sale. \n");
+						break;
+					}
+					if(activeRegister.getActiveSale() == null)
+					{
+						System.out.println("No active sale to cancel. \n");
+						break;
+					}
+					try {
+						// Cancel current active sale
+						activeRegister.cancelSale();
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					break;
+				case "5":
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before adding an item to a sale. \n");
@@ -178,7 +199,7 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "5":
+				case "6":
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before removing an item from a sale. \n");
@@ -210,7 +231,7 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "6":
+				case "7":
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before returning a sale. \n");
@@ -249,7 +270,7 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "7": 
+				case "8": 
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before returning an item. \n");
@@ -309,7 +330,7 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "8":
+				case "9":
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before completing a sale. \n");
@@ -324,7 +345,37 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "9":
+				case "10":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before printing a report. \n");
+						break;
+					}
+					try {
+						// print active register inventory report 
+						activeRegister.printInventoryReport();
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					break;
+				case "11":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before printing a report. \n");
+						break;
+					}
+					try {
+						// print active register cashier report 
+						activeRegister.printCashierReport();
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					break;
+				case "12":
 					System.out.println("POS System is closing \n");
 					break;
 				default: break;
@@ -398,12 +449,15 @@ public class Console
 		consoleCommandPrompt.append("1) Log in to new register as new employee \n");
 		consoleCommandPrompt.append("2) Switch Register \n");
 		consoleCommandPrompt.append("3) Add Sale \n");
-		consoleCommandPrompt.append("4) Add Item to Sale \n");
-		consoleCommandPrompt.append("5) Remove Item in Sale \n");
-		consoleCommandPrompt.append("6) Return Sale \n");
-		consoleCommandPrompt.append("7) Return Item \n");
-		consoleCommandPrompt.append("8) Complete Current Sale \n");
-		consoleCommandPrompt.append("9) Stop POS System \n");
+		consoleCommandPrompt.append("4) Cancel Current Sale \n");
+		consoleCommandPrompt.append("5) Add Item to Sale \n");
+		consoleCommandPrompt.append("6) Remove Item in Sale \n");
+		consoleCommandPrompt.append("7) Return Sale \n");
+		consoleCommandPrompt.append("8) Return Item \n");
+		consoleCommandPrompt.append("9) Complete Current Sale \n");
+		consoleCommandPrompt.append("10) Print Inventory Report \n");
+		consoleCommandPrompt.append("11) Print Cashier Report \n");
+		consoleCommandPrompt.append("12) Stop POS System \n");
 		
 		System.out.print(consoleCommandPrompt);
 	}

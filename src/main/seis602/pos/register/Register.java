@@ -71,7 +71,12 @@ public class Register
 		// TODO: Add item back into inventory
 		
 		// Remove item from active sale
-		//this.activeSale.returnItem(item);
+		//this.activeSale.voidItem(item);
+	}
+	
+	public void cancelSale() throws Exception
+	{
+		this.activeSale.voidSale();
 	}
 	
 	public void createSale(Sale newSale) throws Exception
