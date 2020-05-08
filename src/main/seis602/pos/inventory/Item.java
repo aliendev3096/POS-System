@@ -8,6 +8,15 @@ public class Item
 	private String supplier;
 	private double price;
 	
+	public Item(String name, double price, String supplier)
+	{
+		this.name = name;
+		this.price = price;
+		onHandQuantity = 5;
+		threshold = 4;
+		this.supplier = supplier;
+	}
+	
 	public String getName() {
 		return name;
 	}

@@ -153,7 +153,7 @@ public class Register
 				.orElse(null);
 
 		// get Item from Sales Item List
-		Item item = sale.getItem(itemName);
+		Item item = sale.getItem(itemName, ItemStatus.ACTIVE);
 		
 		//check for existing item in sale
 		if(item == null)
