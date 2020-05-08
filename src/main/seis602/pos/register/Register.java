@@ -108,23 +108,27 @@ public class Register
 		
 		//add activeSale to archived sales
 		this.sales.add(this.activeSale);
+		
+		// Add Total Sale Amount
+		this.totalSales += this.activeSale.getTotal();
 	}
 	
-	public void returnSale(Sale sale) throws Exception
+	public Refund returnSale(int saleId) throws Exception
 	{
+		Refund refund = new Refund();
 		// Use a stream to find the sale with saleId from the collection of sales
 		// Note: It would be nice to have the list of sales as static but we'd have to figure out a way to 
 		// update the total sales property on the appropriate register without the use of a database which could
 		// potentially get messy. For simplicity sake the list of sales will be respective to its own class
 		Sale saleToReturn = sales.stream()
-				.filter(s -> s.getSaleId() == sale.getSaleId())
+				.filter(s -> s.getSaleId() == saleId)
 				.findFirst()
 				.orElse(null);
 		//check for existing sale
 		if(saleToReturn == null)
 		{
 			// throw exception if sale does not exist on registerId
-			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", sale.getSaleId(), registerId));
+			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
 		}
 		
 		// Set Sale Status as Returned
@@ -133,7 +137,12 @@ public class Register
 		// return all items in sale marking it respectively
 		for(Item item : saleToReturn.getItemList())
 		{
+			// Return Item in Sale
 			saleToReturn.returnItem(item);
+			// Set Refund for all items
+			refund.addItem(item.getName());
+			refund.setRefundAmount(refund.getRefundAmount() + item.getPrice());
+			//TODO: Add item back to inventory
 			//inventory.add(item);
 		}
 		
@@ -141,6 +150,9 @@ public class Register
 		
 		// Reduce total sales amount but returned sale amount
 		this.totalSales -= saleToReturn.getTotal();
+		refund.setSaleId(saleId);
+		
+		return refund;
 	}
 	
 	public Refund returnSaleItem(String itemName, int saleId) throws Exception
@@ -168,14 +180,16 @@ public class Register
 		
 		if(returnedSuccess)
 		{
-			refund.setSalesId(sale.getSaleId());
-			refund.setItemName(item.getName());
+			refund.setSaleId(sale.getSaleId());
+			refund.addItem(item.getName());
 			refund.setRefundAmount(item.getPrice());
 		}
+		this.totalSales -= item.getPrice();
+		
 		return refund;
 	}
 	
-	public int getAmountOfSale()
+	public int getAmountOfSales()
 	{
 		return this.sales.size();
 	}

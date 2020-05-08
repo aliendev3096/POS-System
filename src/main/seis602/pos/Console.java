@@ -232,15 +232,11 @@ public class Console
 						System.out.println("Enter a sale id to return: \n");
 						// Take input from user
 						String saleId = in.nextLine();
+						int integerSaleId = Integer.parseInt(saleId);
 						try
 						{
-							// Search for user inputed sale id
-							Sale saleToReturn = activeRegister.getSales().stream()
-									.filter(r -> r.getSaleId() == Integer.parseInt(saleId))
-									.findFirst()
-									.orElse(null);
 							//return sale via register 
-							activeRegister.returnSale(saleToReturn);
+							activeRegister.returnSale(integerSaleId);
 							
 						}
 						catch(Exception e)
