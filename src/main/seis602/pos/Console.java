@@ -10,6 +10,7 @@ import main.seis602.pos.register.Cashier;
 import main.seis602.pos.register.ItemStatus;
 import main.seis602.pos.register.Register;
 import main.seis602.pos.register.Sale;
+import main.seis602.pos.register.Status;
 
 public class Console 
 {
@@ -170,6 +171,7 @@ public class Console
 					try {
 						// Cancel current active sale
 						activeRegister.cancelSale();
+						
 					} 
 					catch(Exception e)
 					{
@@ -435,9 +437,15 @@ public class Console
 	{
 		if(activeRegister != null)
 		{
-			if(activeRegister.getActiveSale() != null)
+			if(activeRegister.getActiveSale() != null && activeRegister.getActiveSale().getStatus() == Status.ACTIVE)
 			{
 				System.out.println(String.format("Current Sale Id: %s", activeRegister.getActiveSale().getSaleId()));
+				System.out.println(String.format("Current Sale Items: \n"));
+				for(var item: activeRegister.getActiveSale().getItemList())
+				{
+					System.out.print(String.format("%s : %s\n", item.getName(), item.getPrice()));
+				}
+				System.out.print(String.format("Total: %s \n \n", activeRegister.getActiveSale().getTotal()));
 			}
 		}
 	}

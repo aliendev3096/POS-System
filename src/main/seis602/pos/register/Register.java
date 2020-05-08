@@ -76,6 +76,7 @@ public class Register
 	
 	public void cancelSale() throws Exception
 	{
+		
 		this.activeSale.voidSale();
 	}
 	
