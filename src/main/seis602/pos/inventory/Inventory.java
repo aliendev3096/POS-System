@@ -133,32 +133,6 @@ public class Inventory {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Inventory inventory = new Inventory();
-		for (Item item : inventoryList) {
-			System.out.println(item.toString());
-		}
-		
-		System.out.println("");
-		Item porkItem = inventory.subtractItemQuantity("Pork", 7);
-		System.out.println(porkItem.toString());
-		
-		Item kiwiItem = inventory.subtractItemQuantity("Kiwi", 7);
-		System.out.println(kiwiItem .toString());
-		
-		System.out.println("");
-		for (Item item : inventoryList) {
-			System.out.println(item.toString());
-		}
-		
-		inventory.reOrder();
-		
-		System.out.println("");
-		for (Item item : inventoryList) {
-			System.out.println(item.toString());
-		}
-	}
-	
 	/**
 	 * This method load item into the inventory list;
 	 */
