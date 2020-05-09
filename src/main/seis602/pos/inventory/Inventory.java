@@ -40,6 +40,18 @@ public class Inventory {
 	}
 	
 	/**
+	 * Get the name of the item in the list
+	 * @return list of items' name
+	 */
+	public List<String> getItemsName() {
+		List<String> nameList = new ArrayList<>();
+		for (Item item : inventoryList) {
+			nameList.add(item.getName());
+		}
+		return nameList;
+	}
+	
+	/**
 	 * This method add a new item to the inventory
 	 * @param item
 	 */
