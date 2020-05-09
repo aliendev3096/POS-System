@@ -13,14 +13,22 @@ import java.io.FileNotFoundException;
 
 
 public class Inventory {
+	private static Inventory SINGLETON = null;
 	private static List<Item> inventoryList = new ArrayList<>();
 	private boolean reOrderFlag = false;
-	
-	public Inventory() {
-		// Load initial item from file
-		if (inventoryList.size() == 0) {
-			loadItem();
+
+	public static Inventory getSingleton() {
+		if (SINGLETON  == null) {
+			synchronized (Inventory.class) {
+				if (SINGLETON == null) {
+					SINGLETON   = new Inventory();
+					if (inventoryList.size() == 0) {
+						loadItem();
+					}
+				}
+			}
 		}
+		return SINGLETON;
 	}
 	
 	public boolean getReOrderFlag() {
@@ -136,7 +144,7 @@ public class Inventory {
 	/**
 	 * This method load item into the inventory list;
 	 */
-	private void loadItem() {
+	private static void loadItem() {
 		try {
 			JSONParser parser = new JSONParser();
 			JSONObject json = (JSONObject) parser.parse(getStringFromFile());
@@ -156,7 +164,7 @@ public class Inventory {
 	 * Helper method to read from JSON file
 	 * @return - String
 	 */
-	private String getStringFromFile() {
+	private static String getStringFromFile() {
 		StringBuilder sb = new StringBuilder();
 		try {
 			File dataStore = new File("dataStore.json");
