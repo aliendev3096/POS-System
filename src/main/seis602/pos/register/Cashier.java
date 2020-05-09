@@ -10,7 +10,7 @@ public class Cashier
 	{
 		this.firstName = firstName;
 		this.lastName = lastName;
-		cashierId = id;
+		this.cashierId = id;
 	}
 	
 	public int getCashierId() {

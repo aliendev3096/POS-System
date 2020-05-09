@@ -8,7 +8,7 @@ public class RegisterShould {
 	public void ReturnSaleItem() throws Exception
 	{
 
-		Register register = new Register(new Cashier("Test", "User"));
+		Register register = new Register(new Cashier("Test", "User", 1));
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
@@ -27,7 +27,7 @@ public class RegisterShould {
 	@Test
 	public void ReturnSale() throws Exception
 	{
-		Register register = new Register(new Cashier("Test", "User"));
+		Register register = new Register(new Cashier("Test", "User", 1));
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
@@ -46,7 +46,7 @@ public class RegisterShould {
 	@Test
 	public void CompleteSale() throws Exception
 	{
-		Register register = new Register(new Cashier("Test", "User"));
+		Register register = new Register(new Cashier("Test", "User", 1));
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
@@ -76,7 +76,7 @@ public class RegisterShould {
 	@Test
 	public void CancelSale() throws Exception
 	{
-		Register register = new Register(new Cashier("Test", "User"));
+		Register register = new Register(new Cashier("Test", "User", 1));
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();

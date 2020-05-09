@@ -7,6 +7,12 @@ public class Item
 	private int onHandQuantity;
 	private String supplier;
 	private double price;
+	private int maxOnHandQuantity;
+	private boolean reOrder;
+	
+	public Item() {
+		
+	}
 	
 	public Item(String name, double price, String supplier)
 	{
@@ -47,4 +53,33 @@ public class Item
 	public void setPrice(double price) {
 		this.price = price;
 	}
+	
+	public int getMaxOnHandQuantity() {
+		return this.maxOnHandQuantity;
+	}
+	
+	public void setReOrder(boolean reOrderFlag) {
+		this.reOrder = reOrderFlag;
+	}
+	
+	public boolean getReOrder() {
+		return this.reOrder;
+	}
+	
+	public void addQuantity(int quantity) {
+		this.onHandQuantity += quantity;
+	}
+	
+	public void subtractQuantity(int quantity) {
+		this.onHandQuantity -= quantity;
+	}
+
+	@Override
+	public String toString() {
+		return "Item [name=" + name + ", threshold=" + threshold + ", onHandQuantity=" + onHandQuantity + ", supplier="
+				+ supplier + ", price=" + price + ", maxOnHandQuantity=" + maxOnHandQuantity + ", reOrder=" + reOrder
+				+ "]";
+	}
+	
+	
 }

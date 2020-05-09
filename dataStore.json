@@ -1,0 +1,78 @@
+{
+	"inventory":[
+		{
+			"name": "Orange",
+			"price": "3.50",
+			"onHandQuantity": 10,
+			"threshold": 4,
+			"supplier": "SuperValue",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		},
+		{
+			"name": "Apple",
+			"price": "2.50",
+			"onHandQuantity": 10,
+			"threshold": 4,
+			"supplier": "SuperValue",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		},
+		{
+			"name": "Banana",
+			"price": "6.99",
+			"onHandQuantity": 8,
+			"threshold": 5,
+			"supplier": "SuperValue",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		},
+		{
+			"name": "Kiwi",
+			"price": "1.99",
+			"onHandQuantity": 10,
+			"threshold": 4,
+			"supplier": "SuperValue",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		},
+		{
+			"name": "Toilet Paper",
+			"price": "18.99",
+			"onHandQuantity": 4,
+			"threshold": 2,
+			"supplier": "Toilet Paper Inc.",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		},
+		{
+			"name": "Steak",
+			"price": "13.99",
+			"onHandQuantity": 8,
+			"threshold": 4,
+			"supplier": "Steak Inc.",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		},
+		{
+			"name": "Chicken",
+			"price": "7.99",
+			"onHandQuantity": 10,
+			"threshold": 4,
+			"supplier": "Tyson Food",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		},
+		{
+			"name": "Pork",
+			"price": "8.99",
+			"onHandQuantity": 10,
+			"threshold": 4,
+			"supplier": "Tyson Food",
+			"maxOnHandQuantity": 10,
+			"reOrder": false
+		}
+
+	]
+}
+

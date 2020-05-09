@@ -3,7 +3,6 @@ package main.seis602.pos.register;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import main.seis602.pos.inventory.Inventory;
 import main.seis602.pos.inventory.Item;
 
