@@ -63,6 +63,10 @@ public class Register
 	{
 		Item item = inventory.getItem(itemName);
 		this.activeSale.addItem(item);
+		if(item.getOnHandQuantity() <= item.getThreshold())
+		{
+			inventory.reOrder();
+		}
 	}
 	
 	public void removeItem(String itemName) throws Exception

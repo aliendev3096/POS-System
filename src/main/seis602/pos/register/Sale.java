@@ -83,7 +83,8 @@ public class Sale
 		this.total = total;
 	}
 	
-	public void addItem(Item item) {
+	public boolean addItem(Item item) {
+		Boolean itemAdded = false;
 		// check if the item is in stock
 		int currentOnHandQty = item.getOnHandQuantity();
 		
@@ -95,7 +96,10 @@ public class Sale
 			this.total += item.getPrice(); // adjust the sales total price
 			//item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
 			inventory.subtractItemQuantity(item.getName(), 1);
+			itemAdded = true;
 		}
+		
+		return itemAdded;
 	}
 	
 	public boolean voidItem(Item item) {
