@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import main.seis602.pos.inventory.Inventory;
 import main.seis602.pos.inventory.Item;
 
 public class Sale 
@@ -18,6 +19,7 @@ public class Sale
 	private Date date;
 	private List<Map<ItemStatus, Item>> itemList;
 	private double total;
+	private Inventory inventory;
 	
 	public Sale()
 	{
@@ -26,6 +28,7 @@ public class Sale
 		saleId = identifier;
 		identifier++;
 		itemList = new ArrayList<Map<ItemStatus, Item>>();
+		inventory = Inventory.getSingleton();
 	}
 	
 	public int getSaleId() {
@@ -90,7 +93,8 @@ public class Sale
 			itemToAdd.put(ItemStatus.ACTIVE, item);
 			this.itemList.add(itemToAdd); // add the item to the sales list
 			setTotal(getTotal() + item.getPrice()); // adjust the sales total price
-			item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
+			//item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
+			inventory.subtractItemQuantity(item.getName(), 1);
 		}
 	}
 	
@@ -108,8 +112,8 @@ public class Sale
 				// adjust the sales total price
 				setTotal(getTotal() - item.getPrice());
 				// adjust the item onHandQuantity
-				item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
-				
+				//item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
+				inventory.addItemQuantity(item.getName(), 1);
 				isVoided = true;
 				break;
 			}
@@ -122,7 +126,6 @@ public class Sale
 		for(Item item : this.getItemList()) {
 			//Update Sale List
 			voidItem(item);
-			// TODO: Update inventory
 		}
 		
 		this.total = 0;
@@ -143,8 +146,8 @@ public class Sale
 				// adjust the sales total price
 				setTotal(getTotal() - item.getPrice());
 				// adjust the item onHandQuantity
-				item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
-				
+				//item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
+				inventory.addItemQuantity(item.getName(), 1);
 				isReturned = true;
 				break;
 			}

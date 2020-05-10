@@ -51,6 +51,21 @@ public class Inventory {
 		return nameList;
 	}
 	
+	
+	/**
+	 * Get the item in the list
+	 * @return list of items' name
+	 */
+	public Item getItem(String name) {
+		for (Item item : inventoryList) {
+			if(item.getName().equalsIgnoreCase("name"))
+			{
+				return item;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * This method add a new item to the inventory
 	 * @param item

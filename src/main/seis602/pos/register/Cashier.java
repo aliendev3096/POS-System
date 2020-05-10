@@ -13,6 +13,7 @@ public class Cashier
 		this.cashierId = id;
 	}
 	
+
 	public int getCashierId() {
 		return cashierId;
 	}

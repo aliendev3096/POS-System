@@ -26,7 +26,9 @@ public class Register
 		identifier++;
 		// seed collection of sales
 		sales = new ArrayList<Sale>();
-		// TODO: load inventory upon spinning up a new register
+		// load inventory upon spinning up a new register
+		inventory = new Inventory();
+		
 	}
 
 	public double getTotalSales() {
@@ -59,18 +61,14 @@ public class Register
 	
 	public void addItem(String itemName) throws Exception
 	{
-		// TODO: Pull item from inventory
-		
-		// Add item to active sale
-		// this.activeSale.addItem(item);
+		Item item = inventory.getItem(itemName);
+		this.activeSale.addItem(item);
 	}
 	
 	public void removeItem(String itemName) throws Exception
 	{
-		// TODO: Add item back into inventory
-		
-		// Remove item from active sale
-		//this.activeSale.voidItem(item);
+		Item item = inventory.getItem(itemName);
+		this.activeSale.voidItem(item);
 	}
 	
 	public void cancelSale() throws Exception
@@ -147,11 +145,7 @@ public class Register
 			// Set Refund for all items
 			refund.addItem(item.getName());
 			refund.setRefundAmount(refund.getRefundAmount() + item.getPrice());
-			//TODO: Add item back to inventory
-			//inventory.add(item);
 		}
-		
-		// TODO: return all items to inventory
 		
 		// Reduce total sales amount but returned sale amount
 		this.totalSales -= saleToReturn.getTotal();
@@ -180,8 +174,6 @@ public class Register
 		}
 		// return item relative to the sale
 		boolean returnedSuccess = sale.returnItem(item);
-		
-		// TODO: return item relative to inventory
 		
 		if(returnedSuccess)
 		{

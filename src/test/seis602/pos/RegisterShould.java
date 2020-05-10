@@ -1,6 +1,12 @@
-package main.seis602.pos.register;
+package test.seis602.pos;
 
 import org.junit.*;
+
+import main.seis602.pos.register.Cashier;
+import main.seis602.pos.register.Refund;
+import main.seis602.pos.register.Register;
+import main.seis602.pos.register.Sale;
+import main.seis602.pos.register.Status;
 
 public class RegisterShould {
 
