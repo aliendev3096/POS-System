@@ -26,7 +26,9 @@ public class Register
 		identifier++;
 		// seed collection of sales
 		sales = new ArrayList<Sale>();
-		// TODO: load inventory upon spinning up a new register
+		// load inventory upon spinning up a new register
+		inventory = new Inventory();
+		
 	}
 
 	public double getTotalSales() {
@@ -59,18 +61,18 @@ public class Register
 	
 	public void addItem(String itemName) throws Exception
 	{
-		// TODO: Pull item from inventory
-		
-		// Add item to active sale
-		// this.activeSale.addItem(item);
+		Item item = inventory.getItem(itemName);
+		this.activeSale.addItem(item);
+		if(item.getOnHandQuantity() <= item.getThreshold())
+		{
+			inventory.reOrder();
+		}
 	}
 	
 	public void removeItem(String itemName) throws Exception
 	{
-		// TODO: Add item back into inventory
-		
-		// Remove item from active sale
-		//this.activeSale.voidItem(item);
+		Item item = inventory.getItem(itemName);
+		this.activeSale.voidItem(item);
 	}
 	
 	public void cancelSale() throws Exception
@@ -136,6 +138,7 @@ public class Register
 			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
 		}
 		
+		double saleTotal = saleToReturn.getTotal();
 		// Set Sale Status as Returned
 		saleToReturn.setStatus(Status.RETURNED);
 		
@@ -147,15 +150,26 @@ public class Register
 			// Set Refund for all items
 			refund.addItem(item.getName());
 			refund.setRefundAmount(refund.getRefundAmount() + item.getPrice());
-			//TODO: Add item back to inventory
-			//inventory.add(item);
 		}
 		
-		// TODO: return all items to inventory
-		
 		// Reduce total sales amount but returned sale amount
-		this.totalSales -= saleToReturn.getTotal();
+		this.totalSales -= saleTotal;
 		refund.setSaleId(saleId);
+		
+		Sale saleToRemove = null;
+		// Remove sale from list of registers
+		for(Sale sale: this.sales)
+		{
+			if(sale.getSaleId() == saleId)
+			{
+				saleToRemove = sale;
+			}
+		}
+		
+		if(saleToRemove != null)
+		{
+			this.sales.remove(saleToRemove);
+		}
 		
 		return refund;
 	}
@@ -180,8 +194,6 @@ public class Register
 		}
 		// return item relative to the sale
 		boolean returnedSuccess = sale.returnItem(item);
-		
-		// TODO: return item relative to inventory
 		
 		if(returnedSuccess)
 		{

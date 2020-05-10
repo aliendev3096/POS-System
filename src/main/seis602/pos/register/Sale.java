@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import main.seis602.pos.inventory.Inventory;
 import main.seis602.pos.inventory.Item;
 
 public class Sale 
@@ -18,6 +19,7 @@ public class Sale
 	private Date date;
 	private List<Map<ItemStatus, Item>> itemList;
 	private double total;
+	private Inventory inventory;
 	
 	public Sale()
 	{
@@ -26,6 +28,7 @@ public class Sale
 		saleId = identifier;
 		identifier++;
 		itemList = new ArrayList<Map<ItemStatus, Item>>();
+		inventory = Inventory.getSingleton();
 	}
 	
 	public int getSaleId() {
@@ -80,7 +83,8 @@ public class Sale
 		this.total = total;
 	}
 	
-	public void addItem(Item item) {
+	public boolean addItem(Item item) {
+		Boolean itemAdded = false;
 		// check if the item is in stock
 		int currentOnHandQty = item.getOnHandQuantity();
 		
@@ -89,9 +93,13 @@ public class Sale
 			Map<ItemStatus, Item> itemToAdd = new HashMap<ItemStatus, Item>();
 			itemToAdd.put(ItemStatus.ACTIVE, item);
 			this.itemList.add(itemToAdd); // add the item to the sales list
-			setTotal(getTotal() + item.getPrice()); // adjust the sales total price
-			item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
+			this.total += item.getPrice(); // adjust the sales total price
+			//item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
+			inventory.subtractItemQuantity(item.getName(), 1);
+			itemAdded = true;
 		}
+		
+		return itemAdded;
 	}
 	
 	public boolean voidItem(Item item) {
@@ -106,10 +114,10 @@ public class Sale
 				// upon a cancellation of an item
 				this.itemList.add(Map.of(ItemStatus.VOID, item));
 				// adjust the sales total price
-				setTotal(getTotal() - item.getPrice());
+				this.total -= item.getPrice();
 				// adjust the item onHandQuantity
-				item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
-				
+				//item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
+				inventory.addItemQuantity(item.getName(), 1);
 				isVoided = true;
 				break;
 			}
@@ -122,7 +130,6 @@ public class Sale
 		for(Item item : this.getItemList()) {
 			//Update Sale List
 			voidItem(item);
-			// TODO: Update inventory
 		}
 		
 		this.total = 0;
@@ -141,10 +148,10 @@ public class Sale
 				// upon a cancellation of an item
 				this.itemList.add(Map.of(ItemStatus.RETURNED, item));
 				// adjust the sales total price
-				setTotal(getTotal() - item.getPrice());
+				this.total -= item.getPrice();
 				// adjust the item onHandQuantity
-				item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
-				
+				//item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
+				inventory.addItemQuantity(item.getName(), 1);
 				isReturned = true;
 				break;
 			}
@@ -159,7 +166,7 @@ public class Sale
 			{
 				Item item = itemMap.get(status);
 				// Found the item, return it.
-				if(item.getName() == itemName)
+				if(item.getName().equalsIgnoreCase(itemName))
 				{
 					return item;
 				}
