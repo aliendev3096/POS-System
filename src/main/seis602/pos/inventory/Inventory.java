@@ -58,7 +58,7 @@ public class Inventory {
 	 */
 	public Item getItem(String name) {
 		for (Item item : inventoryList) {
-			if(item.getName().equalsIgnoreCase("name"))
+			if(item.getName().equalsIgnoreCase(name))
 			{
 				return item;
 			}

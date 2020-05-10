@@ -29,6 +29,7 @@ public class Console
 		
 		while(!commandOption.equals("12"))
 		{	
+			System.out.print("-------------------------------------- \n");
 			showCurrentRegister();
 			showCurrentSale();
 			showCommandPrompt();
@@ -143,7 +144,7 @@ public class Console
 						System.out.println("Please log into a register before adding a sale. \n");
 						break;
 					}
-					if(activeRegister.getActiveSale() != null)
+					if(activeRegister.getActiveSale() != null && activeRegister.getActiveSale().getStatus() == Status.ACTIVE)
 					{
 						System.out.println("Active Sale already in session. \n");
 						break;
@@ -184,7 +185,7 @@ public class Console
 						System.out.println("Please log into a register before adding an item to a sale. \n");
 						break;
 					}
-					if(activeRegister.getActiveSale() == null)
+					if(activeRegister.getActiveSale() == null || activeRegister.getActiveSale().getStatus() != Status.ACTIVE)
 					{
 						System.out.println("No sale to add item too. \n");
 						break;
@@ -207,7 +208,7 @@ public class Console
 						System.out.println("Please log into a register before removing an item from a sale. \n");
 						break;
 					}
-					if(activeRegister.getActiveSale() == null)
+					if(activeRegister.getActiveSale() == null || activeRegister.getActiveSale().getStatus() != Status.ACTIVE)
 					{
 						System.out.println("No sale to remove item. \n");
 						break;
@@ -225,8 +226,6 @@ public class Console
 						
 						//Remove item from sale
 						activeRegister.removeItem(itemName);
-						
-						//TODO: Remo
 					} 
 					catch(Exception e)
 					{
@@ -250,7 +249,7 @@ public class Console
 						System.out.println("All Available Sales on current active register. \n");
 						for(Sale sale: activeRegister.getSales())
 						{
-							System.out.println(String.format("Register Number: %s", sale.getSaleId()));
+							System.out.println(String.format("Sale Id: %s \n", sale.getSaleId()));
 						}
 						System.out.println("Enter a sale id to return: \n");
 						// Take input from user
@@ -258,13 +257,12 @@ public class Console
 						int integerSaleId = Integer.parseInt(saleId);
 						try
 						{
-							//return sale via register 
+							//return sale via register
 							activeRegister.returnSale(integerSaleId);
-							
 						}
 						catch(Exception e)
 						{
-							System.out.println("Invalid Sale Id \n");
+							System.out.println(e);
 						}
 					} 
 					catch(Exception e)

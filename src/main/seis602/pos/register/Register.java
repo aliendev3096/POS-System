@@ -134,6 +134,7 @@ public class Register
 			throw new Exception(String.format("Sale of sale id %s does not exist on this register: %s", saleId, registerId));
 		}
 		
+		double saleTotal = saleToReturn.getTotal();
 		// Set Sale Status as Returned
 		saleToReturn.setStatus(Status.RETURNED);
 		
@@ -148,8 +149,23 @@ public class Register
 		}
 		
 		// Reduce total sales amount but returned sale amount
-		this.totalSales -= saleToReturn.getTotal();
+		this.totalSales -= saleTotal;
 		refund.setSaleId(saleId);
+		
+		Sale saleToRemove = null;
+		// Remove sale from list of registers
+		for(Sale sale: this.sales)
+		{
+			if(sale.getSaleId() == saleId)
+			{
+				saleToRemove = sale;
+			}
+		}
+		
+		if(saleToRemove != null)
+		{
+			this.sales.remove(saleToRemove);
+		}
 		
 		return refund;
 	}

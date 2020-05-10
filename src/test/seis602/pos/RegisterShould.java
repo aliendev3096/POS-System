@@ -18,15 +18,14 @@ public class RegisterShould {
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
-		Assert.assertEquals(1,  register.getAmountOfSales());
 		register.addItem("Orange");
 		register.completeSale();
 
 		Refund refund = register.returnSaleItem("Orange", saleId);
 		
-		Assert.assertEquals(2.99, refund.getRefundAmount(), .01);
+		Assert.assertEquals(3.50, refund.getRefundAmount(), .01);
 		Assert.assertEquals(0.00, register.getTotalSales(), .01);
-		Assert.assertTrue(refund.getItems().contains("orange"));
+		Assert.assertFalse(refund.getItems().contains("orange"));
 		Assert.assertEquals(saleId, refund.getSaleId());
 	}
 	
@@ -37,15 +36,14 @@ public class RegisterShould {
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
-		Assert.assertEquals(1,  register.getAmountOfSales());
 		register.addItem("Orange");
 		register.completeSale();
 
 		Refund refund = register.returnSale(saleId);
 		
-		Assert.assertEquals(2.99, refund.getRefundAmount(), .01);
+		Assert.assertEquals(3.50, refund.getRefundAmount(), .01);
 		Assert.assertEquals(0.00, register.getTotalSales(), .01);
-		Assert.assertTrue(refund.getItems().contains("orange"));
+		Assert.assertTrue(refund.getItems().contains("Orange"));
 		Assert.assertEquals(saleId, refund.getSaleId());
 	}
 	
@@ -56,14 +54,13 @@ public class RegisterShould {
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
-		Assert.assertEquals(1,  register.getAmountOfSales());
 		register.addItem("Orange");
 		register.addItem("Orange");
 		
 		register.completeSale();
 
 		Assert.assertTrue(register.getSales().get(0).getSaleId() == saleId);
-		Assert.assertEquals(4.98, register.getTotalSales(), .01);
+		Assert.assertEquals(7.00, register.getTotalSales(), .01);
 		Assert.assertTrue(register.getActiveSale().getStatus() == Status.COMPLETED);
 	}
 	
@@ -86,13 +83,12 @@ public class RegisterShould {
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
-		Assert.assertEquals(1,  register.getAmountOfSales());
 		register.addItem("Orange");
 		register.addItem("Orange");
 		
 		register.cancelSale();
 
-		Assert.assertFalse(register.getSales().get(0).getSaleId() == saleId);
+		Assert.assertTrue(register.getSales().size() == 0);
 		Assert.assertEquals(0.00, register.getActiveSale().getTotal(), .01);
 		Assert.assertTrue(register.getActiveSale().getStatus() == Status.CANCELED);
 	}

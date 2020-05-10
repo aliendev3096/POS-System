@@ -92,7 +92,7 @@ public class Sale
 			Map<ItemStatus, Item> itemToAdd = new HashMap<ItemStatus, Item>();
 			itemToAdd.put(ItemStatus.ACTIVE, item);
 			this.itemList.add(itemToAdd); // add the item to the sales list
-			setTotal(getTotal() + item.getPrice()); // adjust the sales total price
+			this.total += item.getPrice(); // adjust the sales total price
 			//item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
 			inventory.subtractItemQuantity(item.getName(), 1);
 		}
@@ -110,7 +110,7 @@ public class Sale
 				// upon a cancellation of an item
 				this.itemList.add(Map.of(ItemStatus.VOID, item));
 				// adjust the sales total price
-				setTotal(getTotal() - item.getPrice());
+				this.total -= item.getPrice();
 				// adjust the item onHandQuantity
 				//item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
 				inventory.addItemQuantity(item.getName(), 1);
@@ -144,7 +144,7 @@ public class Sale
 				// upon a cancellation of an item
 				this.itemList.add(Map.of(ItemStatus.RETURNED, item));
 				// adjust the sales total price
-				setTotal(getTotal() - item.getPrice());
+				this.total -= item.getPrice();
 				// adjust the item onHandQuantity
 				//item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
 				inventory.addItemQuantity(item.getName(), 1);
@@ -162,7 +162,7 @@ public class Sale
 			{
 				Item item = itemMap.get(status);
 				// Found the item, return it.
-				if(item.getName() == itemName)
+				if(item.getName().equalsIgnoreCase(itemName))
 				{
 					return item;
 				}
