@@ -2,7 +2,6 @@ package main.seis602.pos.register;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import main.seis602.pos.inventory.Inventory;
 import main.seis602.pos.inventory.Item;
 
@@ -27,8 +26,13 @@ public class Register
 		// seed collection of sales
 		sales = new ArrayList<Sale>();
 		// load inventory upon spinning up a new register
-		inventory = new Inventory();
+		inventory = Inventory.getSingleton();
 		
+	}
+	
+	public Inventory getInventory()
+	{
+		return this.inventory;
 	}
 
 	public double getTotalSales() {
@@ -190,7 +194,7 @@ public class Register
 		if(item == null)
 		{
 			// throw exception if item does not exist on sale
-			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", item.getName(), saleId));
+			throw new Exception(String.format("Item of item id %s does not exist on in sale: %s", itemName, saleId));
 		}
 		// return item relative to the sale
 		boolean returnedSuccess = sale.returnItem(item);

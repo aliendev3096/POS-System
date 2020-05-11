@@ -12,7 +12,7 @@ public class Refund
 	
 	public Refund()
 	{
-		refundId++;
+		setRefundId(getRefundId() + 1);
 		items = new ArrayList<String>();
 	}
 	public int getSaleId() {
@@ -32,5 +32,11 @@ public class Refund
 	}
 	public void setRefundAmount(double refundAmount) {
 		this.refundAmount = refundAmount;
+	}
+	public static int getRefundId() {
+		return refundId;
+	}
+	public static void setRefundId(int refundId) {
+		Refund.refundId = refundId;
 	}
 }
