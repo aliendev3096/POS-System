@@ -1,13 +1,11 @@
 package main.seis602.pos;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import main.seis602.pos.inventory.Item;
 import main.seis602.pos.register.Cashier;
-import main.seis602.pos.register.ItemStatus;
 import main.seis602.pos.register.Register;
 import main.seis602.pos.register.Sale;
 import main.seis602.pos.register.Status;
