@@ -14,12 +14,12 @@ public class Item
 		
 	}
 	
-	public Item(String name, double price, String supplier)
+	public Item(String name, double price, String supplier, int threshold, int onHandQuantity)
 	{
 		this.name = name;
 		this.price = price;
-		onHandQuantity = 5;
-		threshold = 4;
+		this.onHandQuantity = onHandQuantity;
+		this.threshold = threshold;
 		this.supplier = supplier;
 	}
 	
