@@ -7,6 +7,7 @@
 			"threshold": 4,
 			"supplier": "SuperValue",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		},
 		{
@@ -16,60 +17,67 @@
 			"threshold": 4,
 			"supplier": "SuperValue",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		},
 		{
 			"name": "Banana",
-			"price": "6.99",
+			"price": "6.75",
 			"onHandQuantity": 8,
 			"threshold": 5,
 			"supplier": "SuperValue",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		},
 		{
 			"name": "Kiwi",
-			"price": "1.99",
+			"price": "2.00",
 			"onHandQuantity": 10,
 			"threshold": 4,
 			"supplier": "SuperValue",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		},
 		{
 			"name": "ToiletPaper",
-			"price": "18.99",
+			"price": "18.50",
 			"onHandQuantity": 4,
 			"threshold": 2,
 			"supplier": "Toilet-Paper-Inc.",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		},
 		{
 			"name": "Steak",
-			"price": "13.99",
+			"price": "13.75",
 			"onHandQuantity": 8,
 			"threshold": 4,
 			"supplier": "Steak-Inc.",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		},
 		{
 			"name": "Chicken",
-			"price": "7.99",
+			"price": "7.25",
 			"onHandQuantity": 10,
 			"threshold": 4,
 			"supplier": "Tyson-Food",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		},
 		{
 			"name": "Pork",
-			"price": "8.99",
+			"price": "8.50",
 			"onHandQuantity": 10,
 			"threshold": 4,
 			"supplier": "Tyson-Food",
 			"maxOnHandQuantity": 10,
+			"pendingOrder": 0,
 			"reOrder": false
 		}
 

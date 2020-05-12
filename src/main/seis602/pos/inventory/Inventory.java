@@ -16,6 +16,7 @@ public class Inventory {
 	private static Inventory SINGLETON = null;
 	private static List<Item> inventoryList = new ArrayList<>();
 	private boolean reOrderFlag = false;
+	private boolean pendingOrderFlag = false;
 
 	public static Inventory getSingleton() {
 		if (SINGLETON  == null) {
@@ -33,6 +34,10 @@ public class Inventory {
 	
 	public boolean getReOrderFlag() {
 		return this.reOrderFlag;
+	}
+	
+	public boolean getPendingOrderFlah() {
+		return this.pendingOrderFlag;
 	}
 	
 	public List<Item> getInventoryList() {
@@ -73,7 +78,7 @@ public class Inventory {
 	public void add(Item item) {
 		boolean addItem = true;
 		for (Item i : inventoryList) {
-			if (i.getName().equals(item.getName())) {
+			if (i.getName().equalsIgnoreCase(item.getName())) {
 				System.out.println(String.format("Item with name=%s is already in the inventory", item.getName()));
 				addItem = false;
 			} 
@@ -113,7 +118,7 @@ public class Inventory {
 	public Item subtractItemQuantity(String name, int quantity) {
 		Item item = null;
 		for (Item i : inventoryList) {
-			if (i.getName().equals(name)) {
+			if (i.getName().equalsIgnoreCase(name)) {
 				if (i.getOnHandQuantity() == 0) {
 					break;
 				} else {
@@ -145,8 +150,17 @@ public class Inventory {
 	 */
 	public void addItemQuantity(String name, int quantity) {
 		for (Item i : inventoryList) {
-			if (i.getName().equals(name)) {
+			if (i.getName().equalsIgnoreCase(name)) {
 				i.addQuantity(quantity);
+				if (i.getOnHandQuantity() > i.getThreshold()) {
+					i.setReOrder(reOrderFlag);
+				}
+				
+			}
+			if (i.getReOrder() == false) {
+				this.reOrderFlag = false;
+			} else {
+				this.reOrderFlag = true;
 				break;
 			}
 		}
@@ -161,11 +175,24 @@ public class Inventory {
 			for (Item i : inventoryList) {
 				if (i.getReOrder()) {
 					int numOfItem = i.getMaxOnHandQuantity() - i.getOnHandQuantity();
-					addItemQuantity(i.getName(), numOfItem); 
+					i.setPendingOrder(numOfItem);
 					i.setReOrder(false);
 				}
 			}
 		}
+		this.reOrderFlag = false;
+		this.pendingOrderFlag = true;
+	}
+	
+	public void moveItemToInventory() {
+		for (Item i : inventoryList) {
+			if (i.getPendingOrder() > 0) {
+				int numOfItem = i.getPendingOrder();
+				i.addQuantity(numOfItem);
+				i.setPendingOrder(0);
+			}
+		}
+		this.pendingOrderFlag = false;
 	}
 	
 	/**

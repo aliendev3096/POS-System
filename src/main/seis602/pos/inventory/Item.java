@@ -8,6 +8,7 @@ public class Item
 	private String supplier;
 	private double price;
 	private int maxOnHandQuantity;
+	private int pendingOrder;
 	private boolean reOrder;
 	
 	public Item() {
@@ -58,6 +59,16 @@ public class Item
 		return this.maxOnHandQuantity;
 	}
 	
+	
+	
+	public int getPendingOrder() {
+		return pendingOrder;
+	}
+
+	public void setPendingOrder(int pendingOrder) {
+		this.pendingOrder = pendingOrder;
+	}
+
 	public void setReOrder(boolean reOrderFlag) {
 		this.reOrder = reOrderFlag;
 	}
@@ -77,9 +88,10 @@ public class Item
 	@Override
 	public String toString() {
 		return "Item [name=" + name + ", threshold=" + threshold + ", onHandQuantity=" + onHandQuantity + ", supplier="
-				+ supplier + ", price=" + price + ", maxOnHandQuantity=" + maxOnHandQuantity + ", reOrder=" + reOrder
-				+ "]";
+				+ supplier + ", price=" + price + ", maxOnHandQuantity=" + maxOnHandQuantity + ", pendingOrder="
+				+ pendingOrder + ", reOrder=" + reOrder + "]";
 	}
+
 	
 	
 }

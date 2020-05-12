@@ -70,6 +70,10 @@ public class Sale
 		return items;
 	}
 	
+	public List<Map<ItemStatus, Item>> getMapItemList() {
+		return this.itemList;
+	}
+	
 	public void setItemList(List<Map<ItemStatus, Item>> itemList) {
 		this.itemList = itemList;
 	}
@@ -84,38 +88,39 @@ public class Sale
 	public boolean addItem(Item item) {
 		Boolean itemAdded = false;
 		// check if the item is in stock
-		int currentOnHandQty = item.getOnHandQuantity();
+		int qty = item.getOnHandQuantity();
 		
 		// Add the item to the sales list, only if the item is in stock
-		if(currentOnHandQty > 0) {
+		if(qty > 0) {
 			Map<ItemStatus, Item> itemToAdd = new HashMap<ItemStatus, Item>();
-			itemToAdd.put(ItemStatus.ACTIVE, item);
-			this.itemList.add(itemToAdd); // add the item to the sales list
-			this.total += item.getPrice(); // adjust the sales total price
-			//item.setOnHandQuantity(item.getOnHandQuantity() - 1); // adjust the item onHandQuantity
-			inventory.subtractItemQuantity(item.getName(), 1);
+			for (int i = 0; i < qty; i++) {
+				itemToAdd.put(ItemStatus.ACTIVE, item);
+				this.itemList.add(itemToAdd); // add the item to the sales list
+				this.total += item.getPrice(); // adjust the sales total price
+			}
+		
 			itemAdded = true;
 		}
 		
 		return itemAdded;
 	}
 	
-	public boolean voidItem(Item item) {
+	public boolean voidItem(String itemName) {
 		boolean isVoided = false;
 		for(Item itemInList : this.getItemList()) {
 			// Item found in the sales list
-			if(itemInList.getName() == item.getName()) { 
+			if(itemInList.getName().equalsIgnoreCase(itemName)) { 
 				// remove the item from the sales list
-				this.itemList.remove(Map.of(ItemStatus.ACTIVE, item)); 
+				this.itemList.remove(Map.of(ItemStatus.ACTIVE, itemInList)); 
 				// if the sale was already completed the we mark the item as returned
 				// if the sale is still active, don't add the item back into the list
 				// upon a cancellation of an item
-				this.itemList.add(Map.of(ItemStatus.VOID, item));
+				this.itemList.add(Map.of(ItemStatus.VOID, itemInList));
 				// adjust the sales total price
-				this.total -= item.getPrice();
+				this.total -= itemInList.getPrice();
 				// adjust the item onHandQuantity
 				//item.setOnHandQuantity(item.getOnHandQuantity() + 1); 
-				inventory.addItemQuantity(item.getName(), 1);
+				inventory.addItemQuantity(itemName,  1);
 				isVoided = true;
 				break;
 			}
@@ -127,7 +132,7 @@ public class Sale
 		// Return all active items to inventory
 		for(Item item : this.getItemList()) {
 			//Update Sale List
-			voidItem(item);
+			voidItem(item.getName());
 		}
 		
 		this.total = 0;

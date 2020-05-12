@@ -18,7 +18,7 @@ public class RegisterShould {
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
-		register.addItem("Orange");
+		register.addItem("Orange", 1);
 		register.completeSale();
 
 		Refund refund = register.returnSaleItem("Orange", saleId);
@@ -36,7 +36,7 @@ public class RegisterShould {
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
-		register.addItem("Orange");
+		register.addItem("Orange", 1);
 		register.completeSale();
 
 		Refund refund = register.returnSale(saleId);
@@ -54,8 +54,8 @@ public class RegisterShould {
 		
 		register.createSale(new Sale());
 		int saleId = register.getActiveSale().getSaleId();
-		register.addItem("Orange");
-		register.addItem("Orange");
+		register.addItem("Orange", 1);
+		register.addItem("Orange", 1);
 		
 		register.completeSale();
 
@@ -69,18 +69,18 @@ public class RegisterShould {
 	{
 		Register register = new Register(new Cashier("Test", "User", 1));
 		register.createSale(new Sale());
-		register.addItem("Apple");
-		register.addItem("Apple");
+		register.addItem("Apple", 1);
+		register.addItem("Apple", 1);
 		
 		Assert.assertEquals(8, register.getInventory().getItem("Apple").getOnHandQuantity());
 		Assert.assertFalse(register.getInventory().getItem("Apple").getReOrder());
 		
-		register.addItem("Apple");
-		register.addItem("Apple");
-		register.addItem("Apple");
+		register.addItem("Apple", 1);
+		register.addItem("Apple", 1);
+		register.addItem("Apple", 1);
 		
 		Assert.assertEquals(5, register.getInventory().getItem("Apple").getOnHandQuantity());
-		register.addItem("Apple");
+		register.addItem("Apple", 1);
 		
 		Assert.assertEquals(10, register.getInventory().getItem("Apple").getOnHandQuantity());
 		Assert.assertFalse(register.getInventory().getItem("Apple").getReOrder());
@@ -91,8 +91,8 @@ public class RegisterShould {
 	{
 		Register register = new Register(new Cashier("Test", "User", 1));
 		register.createSale(new Sale());
-		register.addItem("Kiwi");
-		register.addItem("Kiwi");
+		register.addItem("Kiwi", 1);
+		register.addItem("Kiwi", 1);
 		
 		Assert.assertEquals(8, register.getInventory().getItem("Kiwi").getOnHandQuantity());
 		Assert.assertFalse(register.getInventory().getItem("Kiwi").getReOrder());
@@ -110,8 +110,8 @@ public class RegisterShould {
 		Register register = new Register(new Cashier("Test", "User", 1));
 		
 		register.createSale(new Sale());
-		register.addItem("Orange");
-		register.addItem("Orange");
+		register.addItem("Orange", 1);
+		register.addItem("Orange", 1);
 		
 		register.cancelSale();
 

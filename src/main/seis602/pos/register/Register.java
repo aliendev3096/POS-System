@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import main.seis602.pos.inventory.Inventory;
 import main.seis602.pos.inventory.Item;
+import main.seis602.pos.report.InventoryReport;
+import main.seis602.pos.report.ReportAbstract;
 
 public class Register 
 {
@@ -63,20 +65,15 @@ public class Register
 		return registerId;
 	}
 	
-	public void addItem(String itemName) throws Exception
+	public void addItem(String itemName, int qty) throws Exception
 	{
-		Item item = inventory.getItem(itemName);
+		Item item = inventory.subtractItemQuantity(itemName,  qty);
 		this.activeSale.addItem(item);
-		if(item.getOnHandQuantity() <= item.getThreshold())
-		{
-			inventory.reOrder();
-		}
 	}
 	
 	public void removeItem(String itemName) throws Exception
 	{
-		Item item = inventory.getItem(itemName);
-		this.activeSale.voidItem(item);
+		this.activeSale.voidItem(itemName);
 	}
 	
 	public void cancelSale() throws Exception
@@ -154,6 +151,7 @@ public class Register
 			// Set Refund for all items
 			refund.addItem(item.getName());
 			refund.setRefundAmount(refund.getRefundAmount() + item.getPrice());
+			inventory.addItemQuantity(item.getName(), 1);
 		}
 		
 		// Reduce total sales amount but returned sale amount
@@ -204,6 +202,7 @@ public class Register
 			refund.setSaleId(sale.getSaleId());
 			refund.addItem(item.getName());
 			refund.setRefundAmount(item.getPrice());
+			inventory.addItemQuantity(item.getName(), 1);
 		}
 		this.totalSales -= item.getPrice();
 		
@@ -215,8 +214,28 @@ public class Register
 		return this.sales.size();
 	}
 	
+	public boolean getReOrderFlag() {
+		return inventory.getReOrderFlag();
+	}
+	
+	public boolean getPendingOrderFlag() {
+		return inventory.getPendingOrderFlah();
+	}
+	
+	public void reOrderItem()
+	{
+		inventory.reOrder();
+	}
+	
+	public void moveItemToInventory() 
+	{
+		inventory.moveItemToInventory();
+	}
+	
 	public void printInventoryReport()
 	{
+		ReportAbstract report = new InventoryReport();
+		report.printReport();
 		
 	}
 	

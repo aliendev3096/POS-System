@@ -1,11 +1,14 @@
 package main.seis602.pos;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import main.seis602.pos.inventory.Item;
 import main.seis602.pos.register.Cashier;
+import main.seis602.pos.register.ItemStatus;
 import main.seis602.pos.register.Register;
 import main.seis602.pos.register.Sale;
 import main.seis602.pos.register.Status;
@@ -25,12 +28,13 @@ public class Console
 		String commandOption = "0";
 		
 		
-		while(!commandOption.equals("12"))
+		while(!commandOption.equals("14"))
 		{	
 			System.out.print("-------------------------------------- \n");
 			showCurrentRegister();
 			showCurrentSale();
-			showCommandPrompt();
+			showCommandPrompt(validCredentials);
+			System.out.print("Enter: ");
 			
 			commandOption = in.nextLine();
 
@@ -44,7 +48,7 @@ public class Console
 						validCredentials = authenticate(in);
 						if(!validCredentials)
 						{
-							System.out.println("Do you wish to re-authenticate? (Yes/No)");
+							System.out.print("Do you wish to re-authenticate? (Yes/No): ");
 							String reauthenticateResponse = in.nextLine();
 							if(reauthenticateResponse.equalsIgnoreCase("no"))
 							{
@@ -84,7 +88,7 @@ public class Console
 					{
 						System.out.println(String.format("Register Number: %s", reg.getRegisterId()));
 					}
-					System.out.println("Enter a register number: \n");
+					System.out.print("Enter a register number: ");
 					// Take input from user
 					String regNumber = in.nextLine();
 					try
@@ -104,7 +108,7 @@ public class Console
 								validCredentials = authenticate(in);
 								if(!validCredentials)
 								{
-									System.out.println("Do you wish to re-authenticate? (Yes/No)");
+									System.out.print("Do you wish to re-authenticate? (Yes/No): ");
 									String reauthenticateResponse = in.nextLine();
 									if(reauthenticateResponse.equalsIgnoreCase("no"))
 									{
@@ -190,14 +194,15 @@ public class Console
 					}
 					try {
 						// Take input from user
-						System.out.println("Enter an item to add to sale \n");
+						System.out.print("Enter an item to add to sale: ");
 						String itemName = in.nextLine();
-						
-						activeRegister.addItem(itemName);
+						System.out.print("Enter quantity: ");
+						int qty = Integer.parseInt(in.nextLine());
+						activeRegister.addItem(itemName, qty);
 					} 
 					catch(Exception e)
 					{
-						System.out.print(e);
+						System.out.println("Item does not exist in inventory");
 					}
 					break;
 				case "6":
@@ -219,7 +224,7 @@ public class Console
 							System.out.println(String.format("Item Name: %s", item.getName()));
 						}
 						// Take input from user
-						System.out.println("Enter an item to remove from sale \n");
+						System.out.print("Enter an item to remove from sale: ");
 						String itemName = in.nextLine();
 						
 						//Remove item from sale
@@ -350,6 +355,37 @@ public class Console
 						break;
 					}
 					try {
+						// Re-order Items
+						activeRegister.reOrderItem();
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					
+					break;
+				case "11":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before printing a report. \n");
+						break;
+					}
+					try {
+						// Move Item to Inventory
+						activeRegister.moveItemToInventory() ;
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					break;
+				case "12":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before printing a report. \n");
+						break;
+					}
+					try {
 						// print active register inventory report 
 						activeRegister.printInventoryReport();
 					} 
@@ -358,7 +394,7 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "11":
+				case "13":
 					if(activeRegister == null)
 					{
 						System.out.println("Please log into a register before printing a report. \n");
@@ -373,7 +409,7 @@ public class Console
 						System.out.print(e);
 					}
 					break;
-				case "12":
+				case "14":
 					System.out.println("POS System is closing \n");
 					break;
 				default: break;
@@ -421,6 +457,13 @@ public class Console
 		System.out.println(String.format("Amount of Registers Open: %s", registers.size()));
 		if(activeRegister != null)
 		{
+			if (activeRegister.getReOrderFlag()) {
+				System.out.println("*** One or more items is low in stock, please re-order ***");
+			}
+			
+			if (activeRegister.getPendingOrderFlag()) {
+				System.out.println("*** Order Pending ***");
+			}
 			System.out.println(String.format("Current Register: %s", activeRegister.getRegisterId()));
 			System.out.println(String.format("Amount of Sales in Register: %s", activeRegister.getAmountOfSales()));
 			System.out.println(String.format("Logged in as: %s %s Id: %s", cashier.getFirstName(), cashier.getLastName(), cashier.getCashierId()));
@@ -439,16 +482,24 @@ public class Console
 			{
 				System.out.println(String.format("Current Sale Id: %s", activeRegister.getActiveSale().getSaleId()));
 				System.out.println(String.format("Current Sale Items: \n"));
-				for(var item: activeRegister.getActiveSale().getItemList())
-				{
-					System.out.print(String.format("%s : %s\n", item.getName(), item.getPrice()));
+				List<Map<ItemStatus, Item>> itemList = activeRegister.getActiveSale().getMapItemList();
+				for (Map<ItemStatus, Item> item : itemList) {
+					item.forEach((k, v) -> {
+						if (!k.equals(ItemStatus.ACTIVE)) {
+							System.out.println(String.format("%s %s @ %.2f", k, v.getName(), v.getPrice()));
+						} else {
+							System.out.println(String.format("%s @ %.2f", v.getName(), v.getPrice()));
+						}
+						
+					});
 				}
-				System.out.print(String.format("Total: %s \n \n", activeRegister.getActiveSale().getTotal()));
+				
+				System.out.print(String.format("Total: $%.2f \n \n", activeRegister.getActiveSale().getTotal()));
 			}
 		}
 	}
 	
-	private static void showCommandPrompt()
+	private static void showCommandPrompt(boolean authenticated)
 	{
 		// Generate Prompt in watch mode style
 		StringBuilder consoleCommandPrompt = new StringBuilder("Command: \n");
@@ -461,9 +512,11 @@ public class Console
 		consoleCommandPrompt.append("7) Return Sale \n");
 		consoleCommandPrompt.append("8) Return Item \n");
 		consoleCommandPrompt.append("9) Complete Current Sale \n");
-		consoleCommandPrompt.append("10) Print Inventory Report \n");
-		consoleCommandPrompt.append("11) Print Cashier Report \n");
-		consoleCommandPrompt.append("12) Stop POS System \n");
+		consoleCommandPrompt.append("10) Re-Order Item(s)\n");
+		consoleCommandPrompt.append("11) Move Item(s) to Inventory \n");
+		consoleCommandPrompt.append("12) Print Inventory Report \n");
+		consoleCommandPrompt.append("13) Print Cashier Report \n");
+		consoleCommandPrompt.append("14) Stop POS System \n");
 		
 		System.out.print(consoleCommandPrompt);
 	}
@@ -472,10 +525,10 @@ public class Console
 	{
 		boolean validCredentials = false;
 		// prompt for user credentials
-		System.out.println("Username: \n");
+		System.out.print("Username: ");
 		username = in.nextLine();
 
-		System.out.println("Password: ");
+		System.out.print("Password: ");
 		password = in.nextLine();
 		validCredentials = validateCredentials(username, password);
 

@@ -43,7 +43,7 @@ public class SaleShould {
 		
 		Assert.assertEquals(12.97, newSale.getTotal(), .01);
 		//Act 
-		newSale.voidItem(orangeItem);
+		newSale.voidItem(orangeItem.getName());
 		
 		//Assert
 		Assert.assertEquals(9.98, newSale.getTotal(), .01);
