@@ -37,11 +37,11 @@
 			"reOrder": false
 		},
 		{
-			"name": "Toilet Paper",
+			"name": "ToiletPaper",
 			"price": "18.99",
 			"onHandQuantity": 4,
 			"threshold": 2,
-			"supplier": "Toilet Paper Inc.",
+			"supplier": "Toilet-Paper-Inc.",
 			"maxOnHandQuantity": 10,
 			"reOrder": false
 		},
@@ -50,7 +50,7 @@
 			"price": "13.99",
 			"onHandQuantity": 8,
 			"threshold": 4,
-			"supplier": "Steak Inc.",
+			"supplier": "Steak-Inc.",
 			"maxOnHandQuantity": 10,
 			"reOrder": false
 		},
@@ -59,7 +59,7 @@
 			"price": "7.99",
 			"onHandQuantity": 10,
 			"threshold": 4,
-			"supplier": "Tyson Food",
+			"supplier": "Tyson-Food",
 			"maxOnHandQuantity": 10,
 			"reOrder": false
 		},
@@ -68,7 +68,7 @@
 			"price": "8.99",
 			"onHandQuantity": 10,
 			"threshold": 4,
-			"supplier": "Tyson Food",
+			"supplier": "Tyson-Food",
 			"maxOnHandQuantity": 10,
 			"reOrder": false
 		}
