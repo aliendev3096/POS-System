@@ -14,7 +14,6 @@ public class Register
 	private static int identifier = 45467;
 	private int registerId;
 	private Cashier cashier;
-//	private List<Sale> sales;
 	private Sale activeSale;
 	private double totalSales;
 	private Inventory inventory;
@@ -28,8 +27,6 @@ public class Register
 		registerId = identifier;
 		//increment identifier for all registers
 		identifier++;
-		// seed collection of sales
-//		sales = new ArrayList<Sale>();
 		// load inventory upon spinning up a new register
 		inventory = Inventory.getSingleton();
 		completedSales = CompletedSales.getSingleton();
