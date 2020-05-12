@@ -1,11 +1,9 @@
 package main.seis602.pos;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
 import main.seis602.pos.inventory.Item;
 import main.seis602.pos.register.Cashier;
 import main.seis602.pos.register.ItemStatus;
@@ -250,11 +248,15 @@ public class Console
 						// Display all Sales on current active register
 						// Do we want all sales to be available from all registers?
 						System.out.println("All Available Sales on current active register. \n");
-						for(Sale sale: activeRegister.getSales())
-						{
-							System.out.println(String.format("Sale Id: %s \n", sale.getSaleId()));
-						}
-						System.out.println("Enter a sale id to return: \n");
+						List<Map<Cashier, Sale>> completedSalesList = activeRegister.getSales();
+						completedSalesList.forEach(item -> {
+							item.forEach((cashier, sale) -> {
+								if (sale.getStatus() == Status.COMPLETED)
+									System.out.println(String.format("Sale Id: %s \n", sale.getSaleId()));
+							});
+						});
+						
+						System.out.print("Enter a sale id to return: ");
 						// Take input from user
 						String saleId = in.nextLine();
 						int integerSaleId = Integer.parseInt(saleId);
@@ -287,21 +289,26 @@ public class Console
 					try {
 						//Prompt item return
 						System.out.println("All Available Sales on current active register. \n");
-						for(Sale sale: activeRegister.getSales())
-						{
-							System.out.println(String.format("Sale Number: %s", sale.getSaleId()));
-						}
-						System.out.println("Enter a sale id to return: \n");
+						List<Map<Cashier, Sale>> completedSalesList = activeRegister.getSales();
+						completedSalesList.forEach(item -> {
+							item.forEach((cashier, sale) -> {
+								if (sale.getStatus() == Status.COMPLETED)
+									System.out.println(String.format("Sale Id: %s \n", sale.getSaleId()));
+							});
+						});
+						System.out.print("Enter a sale id to return: ");
 						// Take input from user
 						String saleId = in.nextLine();
 						try
 						{
 							int integerSaleId = Integer.parseInt(saleId);
 							// Search for user inputed sale id
-							Sale sale = activeRegister.getSales().stream()
-									.filter(r -> r.getSaleId() == integerSaleId)
-									.findFirst()
-									.orElse(null);
+							Map<Cashier, Sale> saleMap = activeRegister.getSaleMapById(integerSaleId);
+							Sale  sale = null;
+							for (Map.Entry<Cashier, Sale> entry : saleMap.entrySet()) {
+								sale = entry.getValue();
+						
+							}
 							
 							if(sale == null)
 							{
@@ -316,7 +323,7 @@ public class Console
 										String.format("Item Name : %s", item.getName()));
 							}
 							
-							System.out.println("Enter an item to return: \n");
+							System.out.print("Enter an item to return: ");
 							// Take input from user
 							String itemName = in.nextLine();
 							//return item via register 
@@ -465,7 +472,7 @@ public class Console
 				System.out.println("*** Order Pending ***");
 			}
 			System.out.println(String.format("Current Register: %s", activeRegister.getRegisterId()));
-			System.out.println(String.format("Amount of Sales in Register: %s", activeRegister.getAmountOfSales()));
+			System.out.println(String.format("Amount of Sales in Register: %s", activeRegister.getTotalSales()));
 			System.out.println(String.format("Logged in as: %s %s Id: %s", cashier.getFirstName(), cashier.getLastName(), cashier.getCashierId()));
 		}
 		else

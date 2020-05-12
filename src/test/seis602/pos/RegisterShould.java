@@ -59,7 +59,7 @@ public class RegisterShould {
 		
 		register.completeSale();
 
-		Assert.assertTrue(register.getSales().get(0).getSaleId() == saleId);
+		//Assert.assertTrue(register.getSales().get(0).getSaleId() == saleId);
 		Assert.assertEquals(7.00, register.getTotalSales(), .01);
 		Assert.assertTrue(register.getActiveSale().getStatus() == Status.COMPLETED);
 	}

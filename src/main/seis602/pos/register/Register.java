@@ -1,9 +1,11 @@
 package main.seis602.pos.register;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import main.seis602.pos.inventory.Inventory;
 import main.seis602.pos.inventory.Item;
+import main.seis602.pos.report.CashierReport;
 import main.seis602.pos.report.InventoryReport;
 import main.seis602.pos.report.ReportAbstract;
 
@@ -12,10 +14,11 @@ public class Register
 	private static int identifier = 45467;
 	private int registerId;
 	private Cashier cashier;
-	private List<Sale> sales;
+//	private List<Sale> sales;
 	private Sale activeSale;
 	private double totalSales;
 	private Inventory inventory;
+	private CompletedSales completedSales;
 	
 	public Register(Cashier cashier)
 	{
@@ -26,9 +29,13 @@ public class Register
 		//increment identifier for all registers
 		identifier++;
 		// seed collection of sales
-		sales = new ArrayList<Sale>();
+//		sales = new ArrayList<Sale>();
 		// load inventory upon spinning up a new register
 		inventory = Inventory.getSingleton();
+		completedSales = CompletedSales.getSingleton();
+	}
+	
+	public Register() {
 		
 	}
 	
@@ -53,8 +60,8 @@ public class Register
 		this.activeSale = activeSale;
 	}
 
-	public List<Sale> getSales() {
-		return sales;
+	public List<Map<Cashier, Sale>> getSales() {
+		return completedSales.getCompletedSalesList();
 	}
 
 	public Cashier getCashier() {
@@ -115,23 +122,27 @@ public class Register
 		this.activeSale.setStatus(Status.COMPLETED);
 		
 		//add activeSale to archived sales
-		this.sales.add(this.activeSale);
+		Map<Cashier, Sale> completedSale = new HashMap<>();
+		completedSale.put(this.cashier, this.activeSale);
+		this.completedSales.addCompletedSale(completedSale);
 		
 		// Add Total Sale Amount
 		this.totalSales += this.activeSale.getTotal();
+		
 	}
 	
 	public Refund returnSale(int saleId) throws Exception
 	{
 		Refund refund = new Refund();
-		// Use a stream to find the sale with saleId from the collection of sales
-		// Note: It would be nice to have the list of sales as static but we'd have to figure out a way to 
-		// update the total sales property on the appropriate register without the use of a database which could
-		// potentially get messy. For simplicity sake the list of sales will be respective to its own class
-		Sale saleToReturn = sales.stream()
-				.filter(s -> s.getSaleId() == saleId)
-				.findFirst()
-				.orElse(null);
+
+		Map<Cashier, Sale> saleMap = completedSales.getSaleById(saleId);
+		
+		Sale  saleToReturn = null;
+		for (Map.Entry<Cashier, Sale> entry : saleMap.entrySet()) {
+			saleToReturn = entry.getValue();
+	
+		}
+		
 		//check for existing sale
 		if(saleToReturn == null)
 		{
@@ -141,10 +152,10 @@ public class Register
 		
 		double saleTotal = saleToReturn.getTotal();
 		// Set Sale Status as Returned
-		saleToReturn.setStatus(Status.RETURNED);
+		saleToReturn .setStatus(Status.RETURNED);
 		
 		// return all items in sale marking it respectively
-		for(Item item : saleToReturn.getItemList())
+		for(Item item : saleToReturn .getItemList())
 		{
 			// Return Item in Sale
 			saleToReturn.returnItem(item);
@@ -158,32 +169,19 @@ public class Register
 		this.totalSales -= saleTotal;
 		refund.setSaleId(saleId);
 		
-		Sale saleToRemove = null;
-		// Remove sale from list of registers
-		for(Sale sale: this.sales)
-		{
-			if(sale.getSaleId() == saleId)
-			{
-				saleToRemove = sale;
-			}
-		}
-		
-		if(saleToRemove != null)
-		{
-			this.sales.remove(saleToRemove);
-		}
-		
 		return refund;
 	}
 	
 	public Refund returnSaleItem(String itemName, int saleId) throws Exception
 	{
 		Refund refund = new Refund();
-		// Get respective sale
-		Sale sale = sales.stream()
-				.filter(s -> s.getSaleId() == saleId)
-				.findFirst()
-				.orElse(null);
+		
+		Map<Cashier, Sale> saleMap = completedSales.getSaleById(saleId);
+		Sale  sale = null;
+		for (Map.Entry<Cashier, Sale> entry : saleMap.entrySet()) {
+			sale = entry.getValue();
+	
+		}
 
 		// get Item from Sales Item List
 		Item item = sale.getItem(itemName, ItemStatus.ACTIVE);
@@ -209,9 +207,8 @@ public class Register
 		return refund;
 	}
 	
-	public int getAmountOfSales()
-	{
-		return this.sales.size();
+	public Map<Cashier, Sale> getSaleMapById(int saleId) {
+		return completedSales.getSaleById(saleId);
 	}
 	
 	public boolean getReOrderFlag() {
@@ -241,7 +238,8 @@ public class Register
 	
 	public void printCashierReport()
 	{
-		
+		ReportAbstract report = new CashierReport();
+		report.printReport();
 	}
 	
 	
