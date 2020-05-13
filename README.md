@@ -7,7 +7,6 @@ SEIS 602 Intermediate Software Development
 Group 4:
 
  - Praj Biswal
- - Matthew Johnson
  - Rathana Sorn
  - Jeff Vang
 
