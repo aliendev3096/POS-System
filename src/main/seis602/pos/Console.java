@@ -14,7 +14,7 @@ import main.seis602.pos.register.Status;
 public class Console 
 {
 	private static Register activeRegister = null;
-	private static ArrayList<Register> registers = new ArrayList<Register>();
+	private static List<Register> registers = new ArrayList<>();
 	private static Cashier cashier;
 	private static String username = null, password = null;
 	
@@ -122,6 +122,7 @@ public class Console
 							{
 								activeRegister = newActiveRegister;
 								cashier = retrieveCashier(username);
+								activeRegister.setCashier(cashier);
 								System.out.println(String.format("Register Set to %s", regNumber));
 							}
 							reAuthenticate = true;

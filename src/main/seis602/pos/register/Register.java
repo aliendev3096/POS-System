@@ -38,6 +38,10 @@ public class Register
 		
 	}
 	
+	public void setCashier(Cashier cashier) {
+		this.cashier = cashier;
+	}
+
 	public Inventory getInventory()
 	{
 		return this.inventory;
