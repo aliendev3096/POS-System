@@ -28,11 +28,6 @@ public class CompletedSales {
 		return this.completedSalesList;
 	}
 	
-	public void updateCompletedSale(Map<Cashier, Sale> completedSale) {
-
-		
-	}
-	
 	public Map<Cashier, Sale> getSaleById(int saleId) {
 		Map<Cashier, Sale> result = null;
 		for (Map<Cashier, Sale> item : this.completedSalesList) {
@@ -40,10 +35,8 @@ public class CompletedSales {
 				if (entry.getValue().getSaleId() == saleId) {
 					result = item;
 				}
-				
 			}
 		}
 		return result;
 	}
-	
 }

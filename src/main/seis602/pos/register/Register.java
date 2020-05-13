@@ -235,7 +235,7 @@ public class Register
 	
 	public void printCashierReport()
 	{
-		ReportAbstract report = new CashierReport();
+		ReportAbstract report = new CashierReport(cashier.getCashierId());
 		report.printReport();
 	}
 	
