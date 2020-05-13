@@ -16,6 +16,7 @@ public class Register
 	private Cashier cashier;
 	private Sale activeSale;
 	private double totalSales;
+	private int numberOfSales;
 	private Inventory inventory;
 	private CompletedSales completedSales;
 	
@@ -30,6 +31,7 @@ public class Register
 		// load inventory upon spinning up a new register
 		inventory = Inventory.getSingleton();
 		completedSales = CompletedSales.getSingleton();
+		this.numberOfSales = 0;
 	}
 	
 	public Register() {
@@ -69,6 +71,10 @@ public class Register
 		return registerId;
 	}
 	
+	public int getNumberOfSales() {
+		return numberOfSales;
+	}
+
 	public void addItem(String itemName, int qty) throws Exception
 	{
 		Item item = inventory.subtractItemQuantity(itemName,  qty);
@@ -125,6 +131,7 @@ public class Register
 		
 		// Add Total Sale Amount
 		this.totalSales += this.activeSale.getTotal();
+		this.numberOfSales += 1;
 		
 	}
 	

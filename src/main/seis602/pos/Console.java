@@ -487,7 +487,7 @@ public class Console
 				System.out.println("*** Order Pending ***");
 			}
 			System.out.println(String.format("Current Register: %s", activeRegister.getRegisterId()));
-			System.out.println(String.format("Amount of Sales in Register: %s", activeRegister.getTotalSales()));
+			System.out.println(String.format("Number of Sales in Register: %s", activeRegister.getNumberOfSales()));
 			System.out.println(String.format("Logged in as: %s %s Id: %s", cashier.getFirstName(), cashier.getLastName(), cashier.getCashierId()));
 		}
 		else
