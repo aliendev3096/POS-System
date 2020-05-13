@@ -9,13 +9,16 @@ import main.seis602.pos.register.Sale;
 public class CashierReport extends ReportAbstract {
 	private CompletedSales completedSales;
 	private int cashierId;
+	private boolean isActiveCashier;
 	
-	public CashierReport(int cashierId) {
+	public CashierReport(int cashierId, boolean isActiveCashier) {
 		super(Report.CASHIER);
 		completedSales = CompletedSales.getSingleton();
 		this.cashierId = cashierId;
+		this.isActiveCashier = isActiveCashier;
 	}
 	
+	@Override
 	public void printReport() {
 		List<Map<Cashier, Sale>> completedSalesList = completedSales.getCompletedSalesList();
 		StringBuilder sb = new StringBuilder();
@@ -66,16 +69,59 @@ public class CashierReport extends ReportAbstract {
 		}
 
 		double runningTotal = 0;
+		String cashierId;
+		String name;
+		String saleId;
+		String saleDate;
+		String totalSale;
+		String saleStatus;
+		
 		for (Map<Cashier, Sale> item: completedSalesList) {
 			for(Map.Entry<Cashier, Sale> entry: item.entrySet()) {
-				if (entry.getKey().getCashierId() == this.cashierId) {
-					String cashierId = String.format("%s", entry.getKey().getCashierId());
-					String name = String.format("%s %s", entry.getKey().getFirstName(), entry.getKey().getLastName());
-					String saleId = String.format("%s", entry.getValue().getSaleId());
-					String saleDate = String.format("%s", entry.getValue().getDate());
+				if (entry.getKey().getCashierId() == this.cashierId && this.isActiveCashier) {
+					cashierId = String.format("%s", entry.getKey().getCashierId());
+					name = String.format("%s %s", entry.getKey().getFirstName(), entry.getKey().getLastName());
+					saleId = String.format("%s", entry.getValue().getSaleId());
+					saleDate = String.format("%s", entry.getValue().getDate());
 					runningTotal += entry.getValue().getTotal();
-					String totalSale = String.format("$%.2f", entry.getValue().getTotal());
-					String saleStatus = String.format("%s", entry.getValue().getStatus());
+					totalSale = String.format("$%.2f", entry.getValue().getTotal());
+					saleStatus = String.format("%s", entry.getValue().getStatus());
+					
+					sb.append(String.format("\n|%s", cashierId));
+					for (int i=0; i < cashierIdLength - cashierId.length(); i++ ) {
+						sb.append(" ");
+					}
+					sb.append(String.format("|%s", name));
+					for (int i=0; i < nameLength - name.length(); i++ ) {
+						sb.append(" ");
+					}
+					sb.append(String.format("|%s", saleId));
+					for (int i=0; i < saleIdLength - saleId.length(); i++ ) {
+						sb.append(" ");
+					}
+					sb.append(String.format("|%s", saleDate));
+					for (int i=0; i < saleDateLength - saleDate.length(); i++ ) {
+						sb.append(" ");
+					}
+					sb.append(String.format("|%s", totalSale));
+					for (int i=0; i < totalLength - totalSale.length(); i++ ) {
+						sb.append(" ");
+					}
+					sb.append(String.format("|%s", saleStatus));
+					for (int i=0; i < statusLength - saleStatus.length(); i++ ) {
+						sb.append(" ");
+					}
+					sb.append("|");
+				} 
+				
+				if (!this.isActiveCashier) {
+					cashierId = String.format("%s", entry.getKey().getCashierId());
+					name = String.format("%s %s", entry.getKey().getFirstName(), entry.getKey().getLastName());
+					saleId = String.format("%s", entry.getValue().getSaleId());
+					saleDate = String.format("%s", entry.getValue().getDate());
+					runningTotal += entry.getValue().getTotal();
+					totalSale = String.format("$%.2f", entry.getValue().getTotal());
+					saleStatus = String.format("%s", entry.getValue().getStatus());
 					
 					sb.append(String.format("\n|%s", cashierId));
 					for (int i=0; i < cashierIdLength - cashierId.length(); i++ ) {

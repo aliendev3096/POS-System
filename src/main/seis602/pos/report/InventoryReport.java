@@ -14,6 +14,7 @@ public class InventoryReport extends ReportAbstract{
 		
 	}
 	
+	@Override
 	public void printReport() {
 		List<Item> itemList = inventory.getInventoryList();
 		StringBuilder sb = new StringBuilder();

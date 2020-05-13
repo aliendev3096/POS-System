@@ -233,9 +233,9 @@ public class Register
 		
 	}
 	
-	public void printCashierReport()
+	public void printCashierReport(boolean isActiveCashier)
 	{
-		ReportAbstract report = new CashierReport(cashier.getCashierId());
+		ReportAbstract report = new CashierReport(cashier.getCashierId(), isActiveCashier);
 		report.printReport();
 	}
 	

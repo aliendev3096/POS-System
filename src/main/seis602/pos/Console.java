@@ -26,7 +26,7 @@ public class Console
 		String commandOption = "0";
 		
 		
-		while(!commandOption.equals("14"))
+		while(!commandOption.equals("15"))
 		{	
 			System.out.print("-------------------------------------- \n");
 			showCurrentRegister();
@@ -409,7 +409,7 @@ public class Console
 					}
 					try {
 						// print active register cashier report 
-						activeRegister.printCashierReport();
+						activeRegister.printCashierReport(true);
 					} 
 					catch(Exception e)
 					{
@@ -417,6 +417,21 @@ public class Console
 					}
 					break;
 				case "14":
+					if(activeRegister == null)
+					{
+						System.out.println("Please log into a register before printing a report. \n");
+						break;
+					}
+					try {
+						// print active register cashier report 
+						activeRegister.printCashierReport(false);
+					} 
+					catch(Exception e)
+					{
+						System.out.print(e);
+					}
+					break;
+				case "15":
 					System.out.println("POS System is closing \n");
 					break;
 				default: break;
@@ -522,8 +537,9 @@ public class Console
 		consoleCommandPrompt.append("10) Re-Order Item(s)\n");
 		consoleCommandPrompt.append("11) Move Item(s) to Inventory \n");
 		consoleCommandPrompt.append("12) Print Inventory Report \n");
-		consoleCommandPrompt.append("13) Print Cashier Report \n");
-		consoleCommandPrompt.append("14) Stop POS System \n");
+		consoleCommandPrompt.append("13) Print Cashier Report - Active Cashier \n");
+		consoleCommandPrompt.append("14) Print Cashier Report \n");
+		consoleCommandPrompt.append("15) Stop POS System \n");
 		
 		System.out.print(consoleCommandPrompt);
 	}
