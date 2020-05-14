@@ -7,7 +7,7 @@ import main.seis602.pos.register.ItemStatus;
 import main.seis602.pos.register.Sale;
 import main.seis602.pos.register.Status;
 
-public class SaleShould {
+public class SaleTest {
 
 	@Test
 	public void ReturnItemOnCompleteSale()

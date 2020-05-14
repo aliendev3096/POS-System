@@ -22,6 +22,7 @@ public class Item
 		this.onHandQuantity = onHandQuantity;
 		this.threshold = threshold;
 		this.supplier = supplier;
+		this.maxOnHandQuantity = onHandQuantity;
 	}
 	
 	public String getName() {

@@ -8,7 +8,7 @@ import main.seis602.pos.register.Register;
 import main.seis602.pos.register.Sale;
 import main.seis602.pos.register.Status;
 
-public class RegisterShould {
+public class RegisterTest {
 
 	@Test
 	public void ReturnSaleItem() throws Exception

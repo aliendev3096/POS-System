@@ -12,7 +12,7 @@ public class CompletedSales {
 		if (SINGLETON  == null) {
 			synchronized (CompletedSales.class) {
 				if (SINGLETON == null) {
-					SINGLETON   = new CompletedSales();
+					SINGLETON = new CompletedSales();
 					
 				}
 			}
