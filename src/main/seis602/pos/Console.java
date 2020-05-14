@@ -477,7 +477,7 @@ public class Console
 	
 	private static void showCurrentRegister()
 	{
-		System.out.println(String.format("Amount of Registers Open: %s", registers.size()));
+		System.out.println(String.format("Number of Register Open: %s", registers.size()));
 		if(activeRegister != null)
 		{
 			if (activeRegister.getReOrderFlag()) {
@@ -531,14 +531,14 @@ public class Console
 		consoleCommandPrompt.append("3) Add Sale \n");
 		consoleCommandPrompt.append("4) Cancel Current Sale \n");
 		consoleCommandPrompt.append("5) Add Item to Sale \n");
-		consoleCommandPrompt.append("6) Remove Item in Sale \n");
+		consoleCommandPrompt.append("6) Void Item in Sale \n");
 		consoleCommandPrompt.append("7) Return Sale \n");
 		consoleCommandPrompt.append("8) Return Item \n");
 		consoleCommandPrompt.append("9) Complete Current Sale \n");
 		consoleCommandPrompt.append("10) Re-Order Item(s)\n");
 		consoleCommandPrompt.append("11) Move Item(s) to Inventory \n");
 		consoleCommandPrompt.append("12) Print Inventory Report \n");
-		consoleCommandPrompt.append("13) Print Cashier Report - Active Cashier \n");
+		consoleCommandPrompt.append("13) Print Cashier Report - Current Cashier \n");
 		consoleCommandPrompt.append("14) Print Cashier Report \n");
 		consoleCommandPrompt.append("15) Stop POS System \n");
 		
