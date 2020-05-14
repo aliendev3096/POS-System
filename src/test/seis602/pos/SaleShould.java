@@ -20,13 +20,13 @@ public class SaleShould {
 		newSale.addItem(orangeItem);
 		newSale.addItem(new Item("Chocolate", 3.99, null, 3,3));
 		
-		Assert.assertEquals(12.97, newSale.getTotal(), .01);
+		Assert.assertEquals(38.91, newSale.getTotal(), .01);
 		newSale.setStatus(Status.COMPLETED);
 
 		newSale.returnItem(orangeItem);
 		
-		Assert.assertEquals(9.98, newSale.getTotal(), .01);
-		Assert.assertNull(newSale.getItem("Orange", ItemStatus.ACTIVE));
+		Assert.assertEquals(35.92, newSale.getTotal(), .01);
+		Assert.assertNotNull(newSale.getItem("Orange", ItemStatus.ACTIVE));
 		Assert.assertNotNull(newSale.getItem("Orange", ItemStatus.RETURNED));
 	}
 	
@@ -41,13 +41,13 @@ public class SaleShould {
 		newSale.addItem(orangeItem);
 		newSale.addItem(new Item("Chocolate", 3.99, null, 3, 3));
 		
-		Assert.assertEquals(12.97, newSale.getTotal(), .01);
+		Assert.assertEquals(38.91, newSale.getTotal(), .01);
 		//Act 
 		newSale.voidItem(orangeItem.getName());
 		
 		//Assert
-		Assert.assertEquals(9.98, newSale.getTotal(), .01);
-		Assert.assertNull(newSale.getItem("Orange", ItemStatus.ACTIVE));
+		Assert.assertEquals(35.92, newSale.getTotal(), .01);
+		Assert.assertNotNull(newSale.getItem("Orange", ItemStatus.ACTIVE));
 		Assert.assertNotNull(newSale.getItem("Orange", ItemStatus.VOID));
 	}
 	
@@ -62,7 +62,7 @@ public class SaleShould {
 		newSale.addItem(orangeItem);
 		newSale.addItem(new Item("Chocolate", 3.99, null, 3, 3));
 		
-		Assert.assertEquals(12.97, newSale.getTotal(), .01);
+		Assert.assertEquals(38.91, newSale.getTotal(), .01);
 		//Act 
 		newSale.voidSale();
 		

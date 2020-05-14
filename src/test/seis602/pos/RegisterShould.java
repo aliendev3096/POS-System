@@ -83,6 +83,7 @@ public class RegisterShould {
 		register.addItem("Apple", 1);
 		
 		Assert.assertEquals(4, register.getInventory().getItem("Apple").getOnHandQuantity());
+		Assert.assertTrue(register.getInventory().getItem("Apple").getReOrder());
 	}
 	
 	@Test
@@ -109,8 +110,8 @@ public class RegisterShould {
 		Register register = new Register(new Cashier("Test", "User", 1));
 		
 		register.createSale(new Sale());
-		register.addItem("Orange", 1);
-		register.addItem("Orange", 1);
+		register.addItem("Steak", 1);
+		register.addItem("Steak", 1);
 		
 		register.cancelSale();
 
