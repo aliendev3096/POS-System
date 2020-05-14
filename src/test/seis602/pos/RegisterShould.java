@@ -82,8 +82,8 @@ public class RegisterShould {
 		Assert.assertEquals(5, register.getInventory().getItem("Apple").getOnHandQuantity());
 		register.addItem("Apple", 1);
 		
-		Assert.assertEquals(10, register.getInventory().getItem("Apple").getOnHandQuantity());
-		Assert.assertFalse(register.getInventory().getItem("Apple").getReOrder());
+		Assert.assertEquals(4, register.getInventory().getItem("Apple").getOnHandQuantity());
+		Assert.assertTrue(register.getInventory().getItem("Apple").getReOrder());
 	}
 	
 	@Test
@@ -110,12 +110,12 @@ public class RegisterShould {
 		Register register = new Register(new Cashier("Test", "User", 1));
 		
 		register.createSale(new Sale());
-		register.addItem("Orange", 1);
-		register.addItem("Orange", 1);
+		register.addItem("Steak", 1);
+		register.addItem("Steak", 1);
 		
 		register.cancelSale();
 
-		Assert.assertTrue(register.getSales().size() == 0);
+		Assert.assertTrue(register.getSales().size() == 1);
 		Assert.assertEquals(0.00, register.getActiveSale().getTotal(), .01);
 		Assert.assertTrue(register.getActiveSale().getStatus() == Status.CANCELED);
 	}
