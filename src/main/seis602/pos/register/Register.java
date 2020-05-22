@@ -237,6 +237,10 @@ public class Register
 		inventory.moveItemToInventory();
 	}
 	
+	public void flushInventory() {
+		inventory.flush();
+	}
+	
 	public void printInventoryReport()
 	{
 		ReportAbstract report = new InventoryReport();

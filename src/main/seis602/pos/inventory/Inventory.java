@@ -8,8 +8,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import main.seis602.pos.inventory.Item;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class Inventory {
@@ -193,6 +197,47 @@ public class Inventory {
 			}
 		}
 		this.pendingOrderFlag = false;
+	}
+	
+	/**
+	 * this method flush data stored in 
+	 * List<item> into dataStore.json
+	 */
+	@SuppressWarnings({ "unchecked" })
+	public void flush() {
+		if (!Inventory.inventoryList.isEmpty()) {
+			JSONObject jsonObject = new JSONObject();
+			JSONArray jsonArray = new JSONArray();
+			
+			for (Item item : Inventory.inventoryList) {
+				JSONObject itemObject = new JSONObject();
+				itemObject.put("name", item.getName());
+				itemObject.put("price", item.getPrice());
+				itemObject.put("onHandQuantity", item.getOnHandQuantity());
+				itemObject.put("threshold", item.getThreshold());
+				itemObject.put("supplier", item.getSupplier());
+				itemObject.put("maxOnHandQuantity", item.getMaxOnHandQuantity());
+				itemObject.put("pendingOrder", item.getPendingOrder());
+				itemObject.put("reOrder", item.getReOrder());
+				jsonArray.add(itemObject);
+			}
+			jsonObject.put("inventory", jsonArray);
+			try {
+				File file = new File("dataStore.json");
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				
+				FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
+				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+				bufferedWriter.write(jsonObject.toJSONString());
+				bufferedWriter.close();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 	}
 	
 	/**

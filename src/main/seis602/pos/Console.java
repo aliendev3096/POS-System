@@ -270,6 +270,9 @@ public class Console
 						{
 							System.out.println(e);
 						}
+						if (activeRegister != null) {
+							activeRegister.flushInventory();
+						}
 					} 
 					catch(Exception e)
 					{
@@ -335,6 +338,9 @@ public class Console
 						{
 							System.out.println(e);
 						}
+						if (activeRegister != null) {
+							activeRegister.flushInventory();
+						}
 					} 
 					catch(Exception e)
 					{
@@ -354,6 +360,9 @@ public class Console
 					catch(Exception e)
 					{
 						System.out.print(e);
+					}
+					if (activeRegister != null) {
+						activeRegister.flushInventory();
 					}
 					break;
 				case "10":
@@ -434,6 +443,9 @@ public class Console
 					break;
 				case "15":
 					System.out.println("POS System is closing \n");
+					if (activeRegister != null) {
+						activeRegister.flushInventory();
+					}
 					break;
 				default: break;
 			}
